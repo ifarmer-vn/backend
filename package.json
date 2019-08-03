@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ifarmer-vn/backend#readme",
   "dependencies": {
-    "jasmine": "^3.4.0"
+    "jasmine": "^3.4.0",
+    "request": "^2.88.0"
   }
 }
