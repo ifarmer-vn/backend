@@ -14,7 +14,7 @@ describe("categories", () => {
             ];
             categories.createAll(cats);
         });
-        fit("should working with json data", async () => {
+        it("should working with json data", async () => {
             await categories.createAll(data);
         });
     });

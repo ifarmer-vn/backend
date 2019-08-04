@@ -11,8 +11,8 @@ const upload = (modelName, fieldName) => (refId, filePath, path) => {
                 "field": fieldName
             })
         };
-        if(filePath){
-            formData.files = fscreateReadStream(filePath);
+        if (filePath) {
+            formData.files = fs.createReadStream(filePath);
         }
         var opts = {
             url: 'http://localhost:1337/upload',
@@ -28,37 +28,20 @@ const upload = (modelName, fieldName) => (refId, filePath, path) => {
 
     });
 };
-const upload1 = b => {
-    return new Promise((resolve, reject) => {
-
-        let path = __dirname + "/test.png";
-        var opts = {
-            url: 'http://localhost:1337/upload',
-            method: 'POST',
-            json: true,
-            formData: {
-                files: fs.createReadStream(path),
-                to: JSON.stringify({
-                    // fields: {
-                    "refId": "5d4317959c888723682632c8", // User's Id.
-                    "path": "", // Uploading folder of file(s).
-                    "ref": "categories", // Model name.
-                    // "source": "content-manager", // Plugin name.
-                    "field": "images" // Field name in the User model.
-
-                    // }
-                })
-            }
-        };
-        request(opts, function (response) {
-            resolve(response) // 'image/png'
+const download = function (uri, filename) {
+    console.log(uri);
+    return new Promise(resolve => {
+        request.head(uri, function (err, res, body) {
+            request(uri).pipe(fs.createWriteStream(filename)).on('close', () => {
+                console.log("downloaded", filename);
+                resolve(filename);
+            });
         });
-
     });
 };
 
-
 const revealed = {
     upload,
+    download
 };
 module.exports = revealed;
