@@ -1,7 +1,31 @@
 const request = require("request");
 const fs = require("fs");
+const upload = (modelName, fieldName) => (refId, filePath, path) => {
+    return new Promise((resolve, reject) => {
+        var opts = {
+            url: 'http://localhost:1337/upload',
+            method: 'POST',
+            json: true,
+            formData: {
+                files: fs.createReadStream(filePath),
+                // files: request(url),
+                to: JSON.stringify({
+                    "refId": refId,
+                    "path": path,
+                    "ref": modelName,
+                    "field": fieldName
+                })
+            }
+        };
+        request(opts, function (error, response, body) {
+            console.log(error);
+            console.log(body);
+            resolve(body) // 'image/png'
+        });
 
-const upload = body1 => {
+    });
+};
+const upload1 = b => {
     return new Promise((resolve, reject) => {
 
         let path = __dirname + "/test.png";
@@ -13,49 +37,23 @@ const upload = body1 => {
                 files: fs.createReadStream(path),
                 to: JSON.stringify({
                     // fields: {
-                        "refId": "5d4317959c888723682632c8", // User's Id.
-                        "path": "", // Uploading folder of file(s).
-                        "ref": "categories", // Model name.
-                        // "source": "content-manager", // Plugin name.
-                        "field": "images" // Field name in the User model.
+                    "refId": "5d4317959c888723682632c8", // User's Id.
+                    "path": "", // Uploading folder of file(s).
+                    "ref": "categories", // Model name.
+                    // "source": "content-manager", // Plugin name.
+                    "field": "images" // Field name in the User model.
 
                     // }
                 })
             }
         };
         request(opts, function (response) {
-             console.log(response) // 'image/png'
-            // console.log(response.statusCode) // 200
+            resolve(response) // 'image/png'
         });
-        //
-        // const body = {
-        //     "files": {
-        //         files: file
-        //     }, // Buffer or stream of file(s)
-        //     fields: {
-        //         "refId": "5d4317959c888723682632c8", // User's Id.
-        //         "path": "", // Uploading folder of file(s).
-        //         "ref": "categories", // Model name.
-        //         // "source": "content-manager", // Plugin name.
-        //         "field": "images" // Field name in the User model.
-        //
-        //     }
-        // };
-        // request.post({
-        //     url: 'http://localhost:1337/upload',
-        //     formData: form
-        // }, function optionalCallback(err, httpResponse, body) {
-        //     if (err) {
-        //         return console.error('upload failed:', err);
-        //     }
-        //     console.log('Upload successful!  Server responded with:', body);
-        // });
-        // request.post("http://localhost:1337/upload").form(body).on('response', function(response) {
-        //     // console.log(response) // 'image/png'
-        //     console.log(response.statusCode) // 200
-        // });
+
     });
 };
+
 
 const revealed = {
     upload,
