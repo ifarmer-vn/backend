@@ -2,20 +2,23 @@ const request = require("request");
 const fs = require("fs");
 const upload = (modelName, fieldName) => (refId, filePath, path) => {
     return new Promise((resolve, reject) => {
+        const formData = {
+            // files: request(url),
+            to: JSON.stringify({
+                "refId": refId,
+                "path": path,
+                "ref": modelName,
+                "field": fieldName
+            })
+        };
+        if(filePath){
+            formData.files = fscreateReadStream(filePath);
+        }
         var opts = {
             url: 'http://localhost:1337/upload',
             method: 'POST',
             json: true,
-            formData: {
-                files: fs.createReadStream(filePath),
-                // files: request(url),
-                to: JSON.stringify({
-                    "refId": refId,
-                    "path": path,
-                    "ref": modelName,
-                    "field": fieldName
-                })
-            }
+            formData: formData
         };
         request(opts, function (error, response, body) {
             console.log(error);
