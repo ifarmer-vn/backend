@@ -25,7 +25,7 @@ describe("articles", () => {
             };
             await articles.create(article);
         });
-        fit("should working with json data", async () => {
+        it("should working with json data", async () => {
             const article = data["bach-thuoc-loi-tieu-chua-dau-bung-kinh-nguyet-khong-deu-mo-hoi-trom"];
             await articles.create(article);
         });
