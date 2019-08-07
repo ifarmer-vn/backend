@@ -5,19 +5,43 @@ const media = require("../media");
 const updateArticleImage = media.upload("variants", "images");
 const createAll = variants => {
     return new Promise(async (resolve, reject) => {
-        let temp = []
+        let tasks = [];
+        let blockTemp = [];
+        let i = 1;
         for (const pp in variants) {
 
             const variant = variants[pp];
-            temp.push(variant);
+            blockTemp.push(async () => {
+                await create(variant);
+            });
+            if (i % 10 === 0) {
+                tasks.push(blockTemp);
+                blockTemp = [];
+            }
+            i++;
         }
-        for(let i =0; i<temp.length;i++){
-            const variant = temp[i];
-            const res = await create(variant);
-            console.log(res);
+        if (blockTemp.length > 0) {
+            tasks.push(blockTemp);
+        }
+        for (let i = 0; i < tasks.length; i++) {
+            await executeAsync(tasks[i])
         }
 
         resolve();
+    });
+};
+const executeAsync = tasks => {
+    const timeStart = "timeStart-" + (+new Date());
+    console.time(timeStart);
+    return new Promise(resolve => {
+        let promises = [];
+        tasks.map(task => {
+            promises.push(task());
+        });
+        Promise.all(promises).then(() => {
+            console.timeEnd(timeStart);
+            resolve();
+        });
     });
 };
 const create = variant => {
@@ -28,8 +52,8 @@ const create = variant => {
             url: "http://localhost:1337/variants",
         }, async function callback(error, response, body) {
             var info = JSON.parse(body);
-            images.map(image => {
-                await updateArticleImage(info._id, image, "variants/" + variant.id);
+            images.map(async image => {
+                await updateArticleImage(info._id, image);
             });
             resolve(info);
         }).form(mapped);
@@ -53,8 +77,8 @@ const downloadImages = (urls) => {
 const downloadImage = async url => {
     return new Promise(async resolve => {
         if (!url.includes("https://")) {
-            console.log("not in firebase", url);
-            resolve("/home/haibui/projects/ifarmer/backend/src/data-examples" + url);
+            // console.log("not in firebase", url);
+            resolve("/home/haibui/projects/ifarmer/backend/src/data-examples/ifarmer-image/" + url);
             return;
         }
         const path = url.split("?")[0].split("%2F");
@@ -72,7 +96,7 @@ const mapping = variant => {
         name: variant.name,
         author: variant.author,
         default: variant.defaultProduct,
-        extraTittle: variant.extraTittle,
+        extraTitle: variant.extraTittle,
         price: variant.price,
         product: variant.product,
         createdAt: variant.dateCreated,
