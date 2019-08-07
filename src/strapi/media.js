@@ -21,8 +21,8 @@ const upload = (modelName, fieldName) => (refId, filePath, path) => {
             formData: formData
         };
         request(opts, function (error, response, body) {
-            console.log(error);
-            console.log(body);
+            // console.log(error);
+            // console.log(body);
             resolve(body) // 'image/png'
         });
 
