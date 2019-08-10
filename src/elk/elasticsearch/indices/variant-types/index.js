@@ -1,6 +1,6 @@
 const schema = require("./mapping");
 const base = require("../_base/index");
-const index = "categories" + base.v();
+const index = "variant-types" + base.v();
 
 const mapping = () => base.mapping(index)(schema);
 
@@ -10,5 +10,6 @@ const revealed = {
 	mapping,
 	createDocument
 };
+
 
 module.exports = revealed;

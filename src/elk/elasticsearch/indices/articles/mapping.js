@@ -1,43 +1,34 @@
+const baseMapping = require("../_base/page-mapping");
 const index = {
-	mappings: {
-		properties: {
-			dateCreated: {
-				type: "keyword"
-			},
-			dateModified: {
-				type: "keyword"
-			},
-			id: {
-				type: "keyword"
-			},
-			image: {
-				type: "keyword"
-			},
-			shortDescription: {
-				type: "text"
-			},
-			smallImage: {
-				type: "keyword"
-			},
-			popularity: {
-				type: "keyword"
-			},
-			author: {
-				type: "keyword"
-			},
-			category: {
-				type: "keyword"
-			},
-			product: {
-				type: "keyword"
-			},
-			created: {
-				type: "keyword"
-			},
-			content: {
-				type: "text"
-			}
-		}
-	}
+    mappings: {
+        properties:{
+            ...baseMapping.mappings.properties,
+            content: {
+                type: "text"
+            },
+            author: {
+                type: "keyword"
+            },
+            next: {
+                type: "keyword"
+            },
+            prev: {
+                type: "keyword"
+            },
+            propagated_urls: {
+                type: "nested"
+            },
+            related_products: {
+                type: "nested"
+            },
+            related_articles: {
+                type: "nested"
+            },
+            article_category: {
+                type: "keyword"
+            }
+        }
+    }
 };
+
 module.exports = index;
