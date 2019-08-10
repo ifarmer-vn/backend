@@ -23,7 +23,7 @@ const getCollections = collections => {
         const promises = [];
         const results = {};
         collections.map(async collection => {
-            promises.push(getAllCollection(repo.db, collection).then(data => {
+            promises.push(getCollectionData(repo.db, collection).then(data => {
                 results[collection] = data;
             }));
         });
@@ -33,12 +33,13 @@ const getCollections = collections => {
         });
     });
 };
-const getAllCollection = (db, name) => {
+const getCollectionData = (db, name) => {
     return new Promise(resolve => {
         const promises = [];
         const collection = db.collection(name);
         const result = [];
         promises.push(collection.find().forEach(function (item) {
+            // delete item._id;
             result.push(item);
             // console.log(item.url);
         }));

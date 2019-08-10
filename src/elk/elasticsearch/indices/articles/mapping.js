@@ -3,9 +3,6 @@ const index = {
     mappings: {
         properties:{
             ...baseMapping.mappings.properties,
-            content: {
-                type: "text"
-            },
             author: {
                 type: "keyword"
             },

@@ -10,6 +10,9 @@ const index = {
 			name: {
 				type: "keyword"
 			},
+			id: {
+				type: "keyword"
+			},
 			updatedAt: {
 				type: "date"
 			},

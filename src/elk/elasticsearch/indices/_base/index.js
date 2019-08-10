@@ -3,7 +3,7 @@ const {version} = require("../../../config/elasticsearch");
 
 const v = () => version;
 const mapping = index => schema => {
-    client.indices.create({
+    return client.indices.create({
             index: index,
             body: schema
         },
@@ -13,22 +13,49 @@ const mapping = index => schema => {
 };
 
 const createDocument = index => doc => {
-    client.index({
+    const body = [{index: {_index: index}}, doc];
+    return client.bulk({
             index: index,
-            body: doc
+            body: body
         },
         (err, resp, respcode) => {
             if (err && err.toJSON) {
-                console.log("Test");
                 console.log(err);
             }
+            // console.log(respcode);
         })
+};
+const createBulk = index => docs => {
+    let bulks = [];
+    for (let i = 0; i < docs.length; i++) {
+        let doc = docs[i];
+        bulks.push({create: {_index: index, _id: i}});
+        doc.id = doc._id;
+        delete doc._id;
+        bulks.push(doc);
+    }
+    if (bulks.length > 0) {
+        pushBulk(bulks);
+    }
+    return bulks;
+};
+const pushBulk = bulks => {
+    return client.bulk(
+        {
+            body: bulks
+        }, function (err, resp) {
+            if (err) {
+                console.log(err.response);
+            }
+        });
 };
 
 const revealed = {
     mapping,
     createDocument,
     v,
+    createBulk,
+    pushBulk
 };
 
 

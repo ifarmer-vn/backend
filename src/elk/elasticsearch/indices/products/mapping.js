@@ -9,9 +9,6 @@ const index = {
 			"original_price": {
 				"type": "float"
 			},
-			"content": {
-				"type": "text"
-			},
 			"specs": {
 				"type": "nested"
 			},
