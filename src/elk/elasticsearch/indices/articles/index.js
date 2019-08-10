@@ -11,5 +11,4 @@ const revealed = {
 	createDocument
 };
 
-
 module.exports = revealed;

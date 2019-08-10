@@ -1,43 +1,34 @@
-
+const baseMapping = require("../_base/page-mapping");
 const index = {
 	mappings: {
-		properties: {
-			brand: {
-				type: "keyword"
+		properties:{
+			...baseMapping.mappings.properties,
+			"price": {
+				"type": "float"
 			},
-			category: {
-				type: "keyword"
+			"original_price": {
+				"type": "float"
 			},
-			content: {
-				type: "text"
+			"content": {
+				"type": "text"
 			},
-			key: {
-				type: "keyword"
+			"specs": {
+				"type": "nested"
 			},
-			shortDescription: {
-				type: "text"
+			"unit": {
+				"type": "keyword"
 			},
-			shortSpecs: {
-				type: "nested"
+			"related_products": {
+				"type": "nested"
 			},
-			specs: {
-				type: "nested"
+			"related_articles": {
+				"type": "nested"
 			},
-			title: {
-				type: "keyword"
-			},
-			price: {
-				type: "keyword"
-			},
-			id: {
-				type: "keyword"
-			},
-			created: {
-				type: "keyword"
+			"category": {
+				"type": "keyword"
 			}
-
 		}
 	}
-
 };
+
 module.exports = index;
