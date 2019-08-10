@@ -18,9 +18,6 @@ const index = {
 			"original_price": {
 				"type": "float"
 			},
-			"content": {
-				"type": "text"
-			}
 		}
 	}
 };

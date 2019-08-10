@@ -6,6 +6,9 @@ const index = {
 			description: {
 				type: "text"
 			},
+			content: {
+				type: "text"
+			},
 			title: {
 				type: "keyword"
 			},

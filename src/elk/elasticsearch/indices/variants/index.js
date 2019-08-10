@@ -5,9 +5,11 @@ const index = "variants" + base.v();
 const mapping = () => base.mapping(index)(schema);
 
 const createDocument = (doc) => base.createDocument(index)(doc);
+const createBulk = (doc) => base.createBulk(index)(doc);
 
 const revealed = {
 	mapping,
+	createBulk,
 	createDocument
 };
 
