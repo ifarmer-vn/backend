@@ -1,20 +1,14 @@
 const {google} = require('googleapis');
 const oauth2 = require('./oauth2');
-
+const config = require("./config")
 const webmasters = google.webmasters({
     version: 'v3',
     auth: oauth2.oAuth2Client,
 });
 
 async function main() {
-    const res = await webmasters.searchanalytics.query({
-        siteUrl: 'http://ifarmer.vn',
-        requestBody: {
-            startDate: '2019-08-08',
-            endDate: '2019-08-08',
-        },
-    });
-    console.log(res.data);
+    const res = await webmasters.searchanalytics.query(config.query);
+    console.log(JSON.stringify(res.data));
     return res.data;
 }
 
