@@ -1,6 +1,7 @@
 const {google} = require('googleapis');
 const oauth2 = require('./oauth2');
-const config = require("./config")
+const config = require("./config");
+const utils = require("../utils");
 const webmasters = google.webmasters({
     version: 'v3',
     auth: oauth2.oAuth2Client,
@@ -13,12 +14,18 @@ async function main() {
 async function getAllData() {
     let startRow = 0;
     let data = await doQuery(startRow);
-    let count = data.rows.length;
+    let count = 0;
     while (data.rows) {
-        console.log("startRow", startRow);
         console.log("row", count += data.rows.length);
+        console.log("startRow", startRow);
         startRow += config.rowLimit;
         data = await doQuery(startRow);
+    }
+}
+
+function saveData(rows) {
+    if (rows) {
+        utils.updateRawDataInToFile(config.storeFile,rows);
     }
 }
 
@@ -33,6 +40,7 @@ async function doQuery(startRow) {
             dimensions: config.dimensions
         }
     });
+    saveData(res.data.rows);
     return res.data;
 }
 
