@@ -7,8 +7,32 @@ const webmasters = google.webmasters({
 });
 
 async function main() {
-    const res = await webmasters.searchanalytics.query(config.query);
-    console.log(JSON.stringify(res.data));
+    await getAllData();
+}
+
+async function getAllData() {
+    let startRow = 0;
+    let data = await doQuery(startRow);
+    let count = data.rows.length;
+    while (data.rows) {
+        console.log("startRow", startRow);
+        console.log("row", count += data.rows.length);
+        startRow += config.rowLimit;
+        data = await doQuery(startRow);
+    }
+}
+
+async function doQuery(startRow) {
+    const res = await webmasters.searchanalytics.query({
+        siteUrl: config.siteUrl,
+        requestBody: {
+            startDate: config.startDate,
+            endDate: config.endDate,
+            rowLimit: config.rowLimit,
+            startRow: startRow,
+            dimensions: config.dimensions
+        }
+    });
     return res.data;
 }
 

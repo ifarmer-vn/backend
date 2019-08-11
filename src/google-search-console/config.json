@@ -1,4 +1,12 @@
 {
+  "rowLimit": 5000,
+  "startDate": "2019-08-08",
+  "endDate": "2019-08-08",
+  "dimensions": [
+    "page",
+    "query"
+  ],
+  "siteUrl": "http://ifarmer.vn",
   "query": {
     "siteUrl": "http://ifarmer.vn",
     "requestBody": {
