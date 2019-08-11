@@ -1,7 +1,8 @@
 {
+  "storeFile": "temp/gsc-2019-07-01.csv",
   "rowLimit": 5000,
-  "startDate": "2019-08-08",
-  "endDate": "2019-08-08",
+  "startDate": "2019-01-01",
+  "endDate": "2019-07-31",
   "dimensions": [
     "page",
     "query"
