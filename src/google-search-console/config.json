@@ -1,0 +1,14 @@
+{
+  "query": {
+    "siteUrl": "http://ifarmer.vn",
+    "requestBody": {
+      "startDate": "2019-08-08",
+      "endDate": "2019-08-08",
+      "rowLimit": 1,
+      "dimensions": [
+        "page",
+        "query"
+      ]
+    }
+  }
+}
