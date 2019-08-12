@@ -1,5 +1,9 @@
 const request = require("request");
 
+const contentName = "products";
+const contentType = require("../_base/content-type");
+const update = contentType.update(contentName);
+
 const createAll = products => {
     return new Promise(async (resolve, reject) => {
         for (const pp in products) {
@@ -16,7 +20,7 @@ const create = product => {
     return new Promise(async (resolve, reject) => {
         const mapped = mapping(product);
         request.post({
-            url: "http://localhost:1337/products",
+            url: `http://localhost:1337/${contentName}`,
         }, async function callback(error, response, body) {
             var info = JSON.parse(body);
             console.log(info);
@@ -42,6 +46,7 @@ const mapping = product => {
 const revealed = {
     create,
     mapping,
-    createAll
+    createAll,
+    update
 };
 module.exports = revealed;

@@ -1,6 +1,9 @@
 const request = require("request");
 const fs = require("fs");
 const media = require("../media");
+const contentName = "articles";
+const contentType = require("../_base/content-type");
+const update = contentType.update(contentName);
 
 const updateArticleImage = media.upload("articles", "images");
 const createAll = articles => {
@@ -18,7 +21,7 @@ const create = article => {
         const mapped = mapping(article);
         const image = await downloadImage(article.image);
         request.post({
-            url: "http://localhost:1337/articles",
+            url: `http://localhost:1337/${contentName}`,
         }, async function callback(error, response, body) {
             var info = JSON.parse(body);
             console.log(info);
@@ -62,6 +65,7 @@ const revealed = {
     create,
     mapping,
     createAll,
-    downloadImage
+    downloadImage,
+    update
 };
 module.exports = revealed;

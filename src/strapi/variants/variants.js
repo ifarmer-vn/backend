@@ -1,6 +1,9 @@
 const request = require("request");
 const fs = require("fs");
 const media = require("../media");
+const contentName = "variants";
+const contentType = require("../_base/content-type");
+const update = contentType.update(contentName);
 
 const updateArticleImage = media.upload("variants", "images");
 const createAll = variants => {
@@ -49,7 +52,7 @@ const create = variant => {
         const mapped = mapping(variant);
         const images = await downloadImages(variant.images);
         request.post({
-            url: "http://localhost:1337/variants",
+            url: `http://localhost:1337/${contentName}`,
         }, async function callback(error, response, body) {
             var info = JSON.parse(body);
             images.map(async image => {
@@ -112,6 +115,7 @@ const revealed = {
     create,
     mapping,
     createAll,
-    downloadImage
+    downloadImage,
+    update
 };
 module.exports = revealed;
