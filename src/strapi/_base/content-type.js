@@ -6,6 +6,7 @@ const update = contentName => data => {
             url: `http://localhost:1337/${contentName}/${data._id}`
         }, async function callback(error, response, body) {
             const info = JSON.parse(body);
+            // console.log(info);
             resolve(info);
         }).form(data);
     });
