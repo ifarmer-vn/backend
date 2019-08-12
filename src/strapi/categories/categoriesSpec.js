@@ -30,6 +30,15 @@ describe("categories", () => {
             await categories.create(category);
         });
     });
+    describe("update", () => {
+        it("should working with dummy data", async () => {
+            const category = {
+                _id: "5d46ec020d9cba13cc66c5b6",
+                click: 4
+            };
+            await categories.update(category);
+        });
+    });
 
     describe("mapping", () => {
         it("should working well", () => {

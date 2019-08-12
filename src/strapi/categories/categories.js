@@ -1,6 +1,8 @@
 const request = require("request");
 const fs = require("fs");
 const media = require("../media");
+const contentType = require("../_base/content-type");
+const update = contentType.update("categories");
 
 const updateCategoryImage = media.upload("categories", "images");
 const createAll = categories => {
@@ -29,7 +31,6 @@ const create = category => {
     });
 };
 
-
 const mapping = category => {
     return {
         url: category.id,
@@ -46,6 +47,7 @@ const mapping = category => {
 const revealed = {
     create,
     mapping,
-    createAll
+    createAll,
+    update
 };
 module.exports = revealed;

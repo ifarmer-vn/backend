@@ -1,5 +1,8 @@
 const request = require("request");
 const fs = require("fs");
+const contentName = "articlecategories";
+const contentType = require("../_base/content-type");
+const update = contentType.update(contentName);
 
 const createAll = categories => {
     return new Promise(async (resolve, reject) => {
@@ -16,7 +19,7 @@ const create = category => {
         const mapped = mapping(category);
         const image = "";
         request.post({
-            url: "http://localhost:1337/articlecategories",
+            url: `http://localhost:1337/${contentName}`,
         }, async function callback(error, response, body) {
             var info = JSON.parse(body);
             console.log(info);
@@ -42,6 +45,7 @@ const mapping = category => {
 const revealed = {
     create,
     mapping,
-    createAll
+    createAll,
+    update
 };
 module.exports = revealed;
