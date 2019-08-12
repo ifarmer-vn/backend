@@ -1,5 +1,6 @@
 {
-  "storeFile": "temp/gsc.csv",
+  "storeFile": "temp/gsc-2019-07-01.csv",
+  "CMSData": "../../temp/data.json",
   "rowLimit": 5000,
   "startDate": "2019-01-01",
   "endDate": "2019-07-31",

@@ -30,6 +30,9 @@ const index = {
 			impression: {
 				type: "integer"
 			},
+			position: {
+				type: "float"
+			},
 			redirect: {
 				type: "keyword"
 			},
