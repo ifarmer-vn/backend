@@ -36,6 +36,9 @@ const index = {
 			heading: {
 				type: "keyword"
 			},
+			keywords: {
+				type: "nested"
+			},
 		}
 	}
 };
