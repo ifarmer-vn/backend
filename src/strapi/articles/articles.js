@@ -19,7 +19,7 @@ const createAll = articles => {
 const create = article => {
     return new Promise(async (resolve, reject) => {
         const mapped = mapping(article);
-        const image = await downloadImage(article.image);
+        const image = await media.downloadImageFromFireBase(article.image);
         request.post({
             url: `http://localhost:1337/${contentName}`,
         }, async function callback(error, response, body) {
@@ -29,20 +29,6 @@ const create = article => {
             resolve(output, info);
         }).form(mapped);
     });
-};
-const downloadImage = async url => {
-    return new Promise(async resolve => {
-        if (!url.includes("https://")) {
-            console.log("not in firebase", url);
-            resolve("/home/haibui/projects/ifarmer/backend/src/data-examples" + url);
-            return;
-        }
-        const path = url.split("?")[0].split("%2F");
-        const fileName = "/home/haibui/projects/ifarmer/backend/src/data-examples/tmp/" + path[path.length - 1];
-        await media.download(url, fileName);
-        resolve(fileName);
-    });
-
 };
 
 
@@ -65,7 +51,6 @@ const revealed = {
     create,
     mapping,
     createAll,
-    downloadImage,
     update
 };
 module.exports = revealed;

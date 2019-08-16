@@ -1,5 +1,4 @@
 const fs = require('fs');
-
 const updateRawDataInToFile = (file, data) => {
     return new Promise(resolve => {
         let lineArray = [];
@@ -29,9 +28,30 @@ const getDataFromCSV = path => {
     return defered;
 };
 
+const regexMatching = regexString => (str, cb) => {
+    return new Promise(async resolve => {
+        let matches;
+        console.time("regexMatching" + str.length);
+        console.log("regexString", regexString);
+        while ((matches = regexString.exec(str))) {
+            // console.log("start cb");
+            await cb(matches);
+            // console.log("end  cb");
+        }
+        console.timeEnd("regexMatching" + str.length);
+        resolve();
+    });
+};
+
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
+
 const revealed = {
     updateRawDataInToFile,
-    getDataFromCSV
+    getDataFromCSV,
+    regexMatching,
 };
 
 module.exports = revealed;
