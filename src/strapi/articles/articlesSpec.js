@@ -42,10 +42,4 @@ describe("articles", () => {
             articles.mapping(article);
         });
     });
-    describe("downloadImage", () => {
-        it("should working well", async () => {
-            const url = "https://firebasestorage.googleapis.com/v0/b/ifarmer-e25f1.appspot.com/o/articles%2Ftrai-cay%2F40-kieu-trang-tri-trai-cay-ngo-nghinh%2Fca-heo-chuoi-nho.jpg?alt=media&token=4eac391e-c45d-4d92-83be-9a9820fcff18";
-            await articles.downloadImage(url);
-        });
-    });
 });

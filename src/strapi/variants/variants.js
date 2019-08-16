@@ -115,7 +115,7 @@ const revealed = {
     create,
     mapping,
     createAll,
-    downloadImage,
+    downloadImage: downloadImageFromFireBase,
     update
 };
 module.exports = revealed;

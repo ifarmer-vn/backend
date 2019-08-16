@@ -6,7 +6,7 @@ const upload = (modelName, fieldName) => (refId, filePath, path) => {
             // files: request(url),
             to: JSON.stringify({
                 "refId": refId,
-                "path": path,
+            "path": path,
                 "ref": modelName,
                 "field": fieldName
             })
@@ -39,9 +39,24 @@ const download = function (uri, filename) {
         });
     });
 };
+const downloadImageFromFireBase = async url => {
+    return new Promise(async resolve => {
+        if (!url.includes("https://")) {
+            console.log("not in firebase", url);
+            resolve("/home/haibui/projects/ifarmer/backend/src/data-examples/" + url.replace("..",""));
+            return;
+        }
+        const path = url.split("?")[0].split("%2F");
+        const fileName = "/home/haibui/projects/ifarmer/backend/src/data-examples/tmp/" + path[path.length - 1];
+        await download(url, fileName);
+        resolve(fileName);
+    });
+
+};
 
 const revealed = {
     upload,
-    download
+    download,
+    downloadImageFromFireBase
 };
 module.exports = revealed;
