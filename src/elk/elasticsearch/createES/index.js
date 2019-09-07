@@ -1,6 +1,6 @@
 const {createIndices} = require("./createIndices");
 const {migrateData} = require("./migrateData");
-const {getCollections} = require("../../../mongodb/index");
+const {getAllData} = require("../../../strapi/strapi");
 
 async function main() {
     return new Promise(resolve => {
@@ -16,8 +16,7 @@ async function main() {
         });
 
         function getAllDataFromCMS() {
-            const collections = ["articles", "categories", "products", "articlecategories", "variants", "varianttypes"];
-            promises.push(getCollections(collections).then(res => {
+            promises.push(getAllData().then(res => {
                 data = res;
             }));
         }

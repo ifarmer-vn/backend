@@ -1,8 +1,10 @@
 const request = require("request");
 const fs = require("fs");
 const media = require("../media");
+const contentName = "categories";
 const contentType = require("../_base/content-type");
-const update = contentType.update("categories");
+const update = contentType.update(contentName);
+const getAll = contentType.getAll(contentName);
 
 const updateCategoryImage = media.upload("categories", "images");
 const createAll = categories => {
@@ -44,7 +46,13 @@ const mapping = category => {
     };
 };
 
+const getName = () => {
+    return contentName;
+};
+
 const revealed = {
+    getName,
+    getAll,
     create,
     mapping,
     createAll,

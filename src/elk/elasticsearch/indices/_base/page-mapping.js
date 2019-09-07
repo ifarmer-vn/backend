@@ -39,9 +39,9 @@ const index = {
 			heading: {
 				type: "keyword"
 			},
-			keywords: {
-				type: "nested"
-			},
+			// keywords: {
+			// 	type: "object"
+			// },
 		}
 	}
 };

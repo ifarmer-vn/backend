@@ -32,6 +32,7 @@ const createBulk = index => docs => {
         bulks.push({create: {_index: index, _id: i}});
         doc.id = doc._id;
         delete doc._id;
+        delete doc.keywords;
         bulks.push(doc);
     }
     if (bulks.length > 0) {

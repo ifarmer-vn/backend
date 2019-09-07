@@ -4,6 +4,7 @@ const media = require("../media");
 const contentName = "variants";
 const contentType = require("../_base/content-type");
 const update = contentType.update(contentName);
+const getAll = contentType.getAll(contentName);
 
 const updateArticleImage = media.upload("variants", "images");
 const createAll = variants => {
@@ -111,11 +112,17 @@ const mapping = variant => {
     };
 };
 
+const getName = () => {
+    return contentName;
+};
+
 const revealed = {
+    getName,
+    getAll,
     create,
     mapping,
     createAll,
-    downloadImage: downloadImageFromFireBase,
+    downloadImage: downloadImage,
     update
 };
 module.exports = revealed;

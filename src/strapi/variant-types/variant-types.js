@@ -3,6 +3,7 @@ const fs = require("fs");
 const contentName = "varianttypes";
 const contentType = require("../_base/content-type");
 const update = contentType.update(contentName);
+const getAll = contentType.getAll(contentName);
 
 const createAll = variantTypes => {
     return new Promise(async (resolve, reject) => {
@@ -37,7 +38,13 @@ const mapping = variantType => {
     };
 };
 
+const getName = () => {
+    return contentName;
+};
+
 const revealed = {
+    getName,
+    getAll,
     create,
     mapping,
     createAll,
