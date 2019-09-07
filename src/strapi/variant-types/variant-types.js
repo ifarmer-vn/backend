@@ -4,6 +4,7 @@ const contentName = "varianttypes";
 const contentType = require("../_base/content-type");
 const update = contentType.update(contentName);
 const getAll = contentType.getAll(contentName);
+const deleteAll = contentType.deleteAll(contentName);
 
 const createAll = variantTypes => {
     return new Promise(async (resolve, reject) => {
@@ -45,6 +46,7 @@ const getName = () => {
 const revealed = {
     getName,
     getAll,
+    deleteAll,
     create,
     mapping,
     createAll,

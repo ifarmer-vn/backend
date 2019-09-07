@@ -22,7 +22,21 @@ const getAllData = () => {
         });
     });
 };
+const deleteAllData = ()=> {
+    return new Promise(async resolve => {
+        const promises = [];
+        contentTypes.map(contentType => {
+            promises.push(contentType.deleteAll().then(data => {
+            }));
+        });
+
+        Promise.all(promises).then(() => {
+            resolve();
+        });
+    });
+};
 
 module.exports = {
-    getAllData
+    getAllData,
+    deleteAllData
 };

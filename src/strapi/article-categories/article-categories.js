@@ -4,6 +4,7 @@ const contentName = "articlecategories";
 const contentType = require("../_base/content-type");
 const update = contentType.update(contentName);
 const getAll = contentType.getAll(contentName);
+const deleteAll = contentType.deleteAll(contentName);
 
 const createAll = categories => {
     return new Promise(async (resolve, reject) => {
@@ -30,16 +31,16 @@ const create = category => {
 };
 
 
-const mapping = category => {
+const mapping = articleCategories => {
     return {
-        url: category.id,
-        name: category.name,
-        createdAt: category.dateCreated,
-        updatedAt: category.dateModified,
-        title: category.title,
-        description: category.shortDescription,
-        popularity: category.popularity,
-        disable: category.hide
+        url: articleCategories.id,
+        name: articleCategories.name,
+        createdAt: articleCategories.dateCreated,
+        updatedAt: articleCategories.dateModified,
+        title: articleCategories.title,
+        description: articleCategories.shortDescription,
+        popularity: articleCategories.popularity,
+        disable: articleCategories.hide
     };
 };
 
@@ -50,6 +51,7 @@ const getName = () => {
 const revealed = {
     getName,
     getAll,
+    deleteAll,
     create,
     mapping,
     createAll,

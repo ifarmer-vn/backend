@@ -48,10 +48,39 @@ String.prototype.replaceAll = function(search, replacement) {
     return target.replace(new RegExp(search, 'g'), replacement);
 };
 
+const executeAsync = tasks => {
+    const timeStart = "timeStart-" + (+new Date());
+    console.time(timeStart);
+    return new Promise(resolve => {
+        let promises = [];
+        tasks.map(task => {
+            promises.push(task());
+        });
+        Promise.all(promises).then(() => {
+            console.timeEnd(timeStart);
+            resolve();
+        });
+    });
+};
+
+const createTasks = tasks => task => {
+    tasks.push(task);
+};
+const executeTasks = async (tasks, opt) => {
+    const thread = opt.thread || 10;
+    let currentTasks = tasks.splice(0, thread);
+    while (currentTasks.length) {
+        await executeAsync(currentTasks)
+        currentTasks = tasks.splice(0, thread);
+    }
+};
 const revealed = {
     updateRawDataInToFile,
+    createTasks,
+    executeTasks,
     getDataFromCSV,
     regexMatching,
+    executeAsync
 };
 
 module.exports = revealed;

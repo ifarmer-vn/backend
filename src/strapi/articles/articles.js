@@ -5,6 +5,7 @@ const contentName = "articles";
 const contentType = require("../_base/content-type");
 const update = contentType.update(contentName);
 const getAll = contentType.getAll(contentName);
+const deleteAll = contentType.deleteAll(contentName);
 
 const updateArticleImage = media.upload("articles", "images");
 const createAll = articles => {
@@ -55,6 +56,7 @@ const getName = () => {
 const revealed = {
     getName,
     getAll,
+    deleteAll,
     create,
     mapping,
     createAll,
