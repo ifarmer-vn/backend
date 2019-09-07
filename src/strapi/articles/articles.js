@@ -4,6 +4,7 @@ const media = require("../media");
 const contentName = "articles";
 const contentType = require("../_base/content-type");
 const update = contentType.update(contentName);
+const getAll = contentType.getAll(contentName);
 
 const updateArticleImage = media.upload("articles", "images");
 const createAll = articles => {
@@ -47,7 +48,13 @@ const mapping = article => {
     };
 };
 
+const getName = () => {
+    return contentName;
+};
+
 const revealed = {
+    getName,
+    getAll,
     create,
     mapping,
     createAll,

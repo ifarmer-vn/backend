@@ -3,6 +3,7 @@ const request = require("request");
 const contentName = "products";
 const contentType = require("../_base/content-type");
 const update = contentType.update(contentName);
+const getAll = contentType.getAll(contentName);
 
 const createAll = products => {
     return new Promise(async (resolve, reject) => {
@@ -43,7 +44,13 @@ const mapping = product => {
     };
 };
 
+const getName = () => {
+    return contentName;
+};
+
 const revealed = {
+    getName,
+    getAll,
     create,
     mapping,
     createAll,

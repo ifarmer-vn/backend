@@ -20,4 +20,4 @@ const revealed = {
     createIndices
 };
 
-module.exports = revealed
+module.exports = revealed;

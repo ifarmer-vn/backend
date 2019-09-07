@@ -3,6 +3,7 @@ const fs = require("fs");
 const contentName = "articlecategories";
 const contentType = require("../_base/content-type");
 const update = contentType.update(contentName);
+const getAll = contentType.getAll(contentName);
 
 const createAll = categories => {
     return new Promise(async (resolve, reject) => {
@@ -42,7 +43,13 @@ const mapping = category => {
     };
 };
 
+const getName = () => {
+    return contentName;
+};
+
 const revealed = {
+    getName,
+    getAll,
     create,
     mapping,
     createAll,
