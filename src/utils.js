@@ -1,4 +1,7 @@
 const fs = require('fs');
+const saveDataToFile = (path, data) => {
+    fs.writeFileSync(path,JSON.stringify(data) );
+};
 const updateRawDataInToFile = (file, data) => {
     return new Promise(resolve => {
         let lineArray = [];
@@ -75,6 +78,7 @@ const executeTasks = async (tasks, opt) => {
     }
 };
 const revealed = {
+    saveDataToFile,
     updateRawDataInToFile,
     createTasks,
     executeTasks,

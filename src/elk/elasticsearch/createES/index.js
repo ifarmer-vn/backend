@@ -1,6 +1,12 @@
+const R = require("ramda");
 const {createIndices} = require("./createIndices");
+const utils = require("../../../utils");
 const {migrateData} = require("./migrateData");
+
 const {getAllData} = require("../../../strapi/strapi");
+
+
+// transformData(require('../../../../cms-data'));
 
 async function main() {
     return new Promise(resolve => {
@@ -11,6 +17,7 @@ async function main() {
         getAllDataFromCMS();
         createAllIndices();
         Promise.all(promises).then(() => {
+            transformData(data);
             migrateData(data);
             resolve();
         });
@@ -18,6 +25,7 @@ async function main() {
         function getAllDataFromCMS() {
             promises.push(getAllData().then(res => {
                 data = res;
+                utils.saveDataToFile('cms-data.json', data);
             }));
         }
 
@@ -35,9 +43,27 @@ async function main() {
         }
     });
 }
-
+function transformData(data) {
+    let variants = data.variants;
+    const products = data.products;
+    variants.map(variant => {
+        let product = R.find(R.propEq('url', variant.product))(products);
+        if (product) {
+            variant.source = {
+                product: {
+                    url: product.url,
+                    title: product.title.trim()
+                }
+            };
+            // console.log("variant", variant.source);
+        } else {
+            console.log("missing prod", variant.url, variant.product);
+        }
+    });
+}
 console.time("Process");
 console.log("Process start");
+
 main().then(() => {
     console.timeEnd("Process");
 });
