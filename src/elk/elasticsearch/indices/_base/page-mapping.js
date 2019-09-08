@@ -3,6 +3,9 @@ const index = {
 	mappings: {
 		properties:{
 			...baseMapping.mappings.properties,
+			source:{
+				type: "nested"
+			},
 			description: {
 				type: "text"
 			},
