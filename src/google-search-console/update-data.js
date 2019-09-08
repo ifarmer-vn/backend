@@ -1,5 +1,6 @@
 const fs = require("fs");
 const util = require("../utils");
+const {getAllData} = require("../strapi/strapi");
 const config = require("./config");
 const getDataFromFile = async file => {
     const data = await util.getDataFromCSV(file);
@@ -78,9 +79,9 @@ const mappingData = pages => (modelName, path, modelRows) => {
         if (page) {
             result.push({
                 _id: row._id,
-                click: page.clicks,
+                clicks: page.clicks,
                 position: page.position,
-                impression: page.impressions,
+                impressions: page.impressions,
                 ctr: page.ctr,
                 keywords: page.keywords,
                 modelName: modelName
@@ -146,10 +147,10 @@ const updateData = (row) => {
 };
 
 async function main() {
-    const CMSData = getCMSDataFromJSON(config.CMSData);
+    const strapiData = await getAllData();
     const data = await getDataFromFile(config.storeFile);
     const GSCData = parseData(data);
-    const needUpdatedData = mappingDataBetweenCMSWithGSC(CMSData, GSCData);
+    const needUpdatedData = mappingDataBetweenCMSWithGSC(strapiData, GSCData);
     console.log(needUpdatedData.length);
     updateDataToCMS(needUpdatedData);
 }
