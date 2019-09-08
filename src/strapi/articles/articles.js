@@ -1,6 +1,6 @@
 const request = require("request");
-const fs = require("fs");
 const media = require("../media");
+const {createTasks, executeTasks} = require("../../utils");
 const contentName = "articles";
 const contentType = require("../_base/content-type");
 const update = contentType.update(contentName);
@@ -8,16 +8,18 @@ const getAll = contentType.getAll(contentName);
 const deleteAll = contentType.deleteAll(contentName);
 
 const updateArticleImage = media.upload("articles", "images");
-const createAll = articles => {
-    return new Promise(async (resolve, reject) => {
-        for (const pp in articles) {
-            const category = articles[pp];
-            const res = await create(category);
-            console.log(res);
-        }
-        resolve();
-    });
+
+const createAll = async data => {
+    let tasks = [];
+    const singleTask = createTasks(tasks);
+    for (const pp in data) {
+        let item = data[pp];
+        item.id = pp;
+        singleTask(async () => await create(item));
+    }
+    await executeTasks(tasks, {thread: 10});
 };
+
 const create = article => {
     return new Promise(async (resolve, reject) => {
         const mapped = mapping(article);
@@ -26,13 +28,11 @@ const create = article => {
             url: `http://localhost:1337/${contentName}`,
         }, async function callback(error, response, body) {
             var info = JSON.parse(body);
-            console.log(info);
-            const output = await updateArticleImage(info._id, image, "articles/" + article.id);
+            const output = await updateArticleImage(info._id, image);
             resolve(output, info);
         }).form(mapped);
     });
 };
-
 
 const mapping = article => {
     return {

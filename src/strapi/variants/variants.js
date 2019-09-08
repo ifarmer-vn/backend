@@ -1,5 +1,5 @@
 const request = require("request");
-const fs = require("fs");
+const {createTasks, executeTasks} = require("../../utils");
 const media = require("../media");
 const contentName = "variants";
 const contentType = require("../_base/content-type");
@@ -7,48 +7,19 @@ const update = contentType.update(contentName);
 const getAll = contentType.getAll(contentName);
 const deleteAll = contentType.deleteAll(contentName);
 
-const updateArticleImage = media.upload("variants", "images");
-const createAll = variants => {
-    return new Promise(async (resolve, reject) => {
-        let tasks = [];
-        let blockTemp = [];
-        let i = 1;
-        for (const pp in variants) {
+const updateImage = media.upload("variants", "images");
 
-            const variant = variants[pp];
-            blockTemp.push(async () => {
-                await create(variant);
-            });
-            if (i % 10 === 0) {
-                tasks.push(blockTemp);
-                blockTemp = [];
-            }
-            i++;
-        }
-        if (blockTemp.length > 0) {
-            tasks.push(blockTemp);
-        }
-        for (let i = 0; i < tasks.length; i++) {
-            await executeAsync(tasks[i])
-        }
+const createAll = async data => {
+    let tasks = [];
+    const singleTask = createTasks(tasks);
+    for (const pp in data) {
+        let item = data[pp];
+        item.id = pp;
+        singleTask(async () => await create(item));
+    }
+    await executeTasks(tasks, {thread: 10});
+};
 
-        resolve();
-    });
-};
-const executeAsync = tasks => {
-    const timeStart = "timeStart-" + (+new Date());
-    console.time(timeStart);
-    return new Promise(resolve => {
-        let promises = [];
-        tasks.map(task => {
-            promises.push(task());
-        });
-        Promise.all(promises).then(() => {
-            console.timeEnd(timeStart);
-            resolve();
-        });
-    });
-};
 const create = variant => {
     return new Promise(async (resolve, reject) => {
         const mapped = mapping(variant);
@@ -57,13 +28,17 @@ const create = variant => {
             url: `http://localhost:1337/${contentName}`,
         }, async function callback(error, response, body) {
             var info = JSON.parse(body);
-            images.map(async image => {
-                await updateArticleImage(info._id, image);
-            });
+            let tasks = [];
+            const singleTask = createTasks(tasks);
+            images.map(async image =>singleTask( async ()=>{
+                await updateImage(info._id, image);
+            }));
+            await executeTasks(tasks, {thread: 1});
             resolve(info);
         }).form(mapped);
     });
 };
+
 const downloadImages = (urls) => {
     let promises = [];
     let images = [];
@@ -82,9 +57,9 @@ const downloadImages = (urls) => {
 const downloadImage = async url => {
     return new Promise(async resolve => {
         if (!url.includes("https://")) {
-            // console.log("not in firebase", url);
-            resolve("/home/haibui/projects/ifarmer/backend/src/data-examples/ifarmer-image/" + url);
-            return;
+            console.log("not in firebase", url);
+            url = url.replace(/\//g,'%2F');
+            url = `https://firebasestorage.googleapis.com/v0/b/ifarmer-e25f1.appspot.com/o/${url}?alt=media&token=6008e893-c74b-4bf0-be37-c1de0495202e`;
         }
         const path = url.split("?")[0].split("%2F");
         const fileName = "/home/haibui/projects/ifarmer/backend/src/data-examples/tmp/" + path[path.length - 1];

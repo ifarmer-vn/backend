@@ -1,21 +1,22 @@
 const request = require("request");
-const fs = require("fs");
+const {createTasks, executeTasks} = require("../../utils");
 const contentName = "varianttypes";
 const contentType = require("../_base/content-type");
 const update = contentType.update(contentName);
 const getAll = contentType.getAll(contentName);
 const deleteAll = contentType.deleteAll(contentName);
 
-const createAll = variantTypes => {
-    return new Promise(async (resolve, reject) => {
-        for (const pp in variantTypes) {
-            const variantType = variantTypes[pp];
-            const res = await create(variantType);
-            console.log(res);
-        }
-        resolve();
-    });
+const createAll = async data => {
+    let tasks = [];
+    const singleTask = createTasks(tasks);
+    for (const pp in data) {
+        let item = data[pp];
+        item.id = pp;
+        singleTask(async () => await create(item));
+    }
+    await executeTasks(tasks, {thread: 10});
 };
+
 const create = variantType => {
     return new Promise((resolve, reject) => {
         const mapped = mapping(variantType);
@@ -23,7 +24,6 @@ const create = variantType => {
             url: `http://localhost:1337/${contentName}`,
         }, async function callback(error, response, body) {
             const info = JSON.parse(body);
-            console.log(info);
             resolve(info);
         }).form(mapped);
     });

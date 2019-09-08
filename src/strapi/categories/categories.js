@@ -1,5 +1,5 @@
 const request = require("request");
-const fs = require("fs");
+const {createTasks, executeTasks} = require("../../utils");
 const media = require("../media");
 const contentName = "categories";
 const contentType = require("../_base/content-type");
@@ -7,28 +7,27 @@ const update = contentType.update(contentName);
 const getAll = contentType.getAll(contentName);
 const deleteAll = contentType.deleteAll(contentName);
 
-const updateCategoryImage = media.upload("categories", "images");
-const createAll = categories => {
-    return new Promise(async (resolve, reject) => {
-        for (const pp in categories) {
-            const category = categories[pp];
-            const res = await create(category);
-            console.log(res);
-        }
-        resolve();
-    });
+const updateImage = media.upload("categories", "images");
+
+const createAll = async data => {
+    let tasks = [];
+    const singleTask = createTasks(tasks);
+    for (const pp in data) {
+        let item = data[pp];
+        item.id = pp;
+        singleTask(async () => await create(item));
+    }
+    await executeTasks(tasks, {thread: 10});
 };
 const create = category => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const mapped = mapping(category);
-        const imageName = category.image.split("?")[0].replace("https://firebasestorage.googleapis.com/v0/b/ifarmer-e25f1.appspot.com/o/category%2F", "");
-        const image = "/home/haibui/projects/ifarmer/backend/src/data-examples/ifarmer-image/categories/" + imageName;
+        const image = await media.downloadImageFromFireBase(category.image);
         request.post({
             url: "http://localhost:1337/categories",
         }, async function callback(error, response, body) {
             var info = JSON.parse(body);
-            console.log(info);
-            const output = await updateCategoryImage(info._id, image, "categories/" + category.id);
+            const output = await updateImage(info._id, image);
             resolve(output, info);
         }).form(mapped);
     });
