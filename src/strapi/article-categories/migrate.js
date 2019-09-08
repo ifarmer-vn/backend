@@ -1,4 +1,8 @@
-const categories = require("./article-categories");
+const articleCategories = require("./article-categories");
 const data = require("../../data-examples/ifarmer")['article-categories'];
 
-categories.createAll(data);
+const migrate = () => articleCategories.createAll(data);
+
+module.exports = {
+    migrate
+};

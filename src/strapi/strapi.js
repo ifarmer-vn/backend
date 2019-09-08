@@ -1,3 +1,4 @@
+const {createTasks, executeTasks} = require("../utils");
 const contentTypes = [
     require("./article-categories/article-categories"),
     require("./articles/articles"),
@@ -6,12 +7,28 @@ const contentTypes = [
     require("./variant-types/variant-types"),
     require("./variants/variants"),
 ];
+const deleteData = [
+    require("./article-categories/article-categories"),
+    require("./articles/articles"),
+    require("./categories/categories"),
+    require("./products/products"),
+    require("./variant-types/variant-types"),
+    require("./variants/variants"),
+    require("./upload/upload"),
+];
+const migrateAll = [
+    require("./categories/migrate"),
+    require("./articles/migrate"),
+    require("./article-categories/migrate"),
+    require("./products/migrate"),
+    require("./variant-types/migrate"),
+    require("./variants/migrate"),
+];
 
-const getAllData = () => {
+const getDataByContentTypes = contentTypes => {
     return new Promise(async resolve => {
         const promises = [];
         const results = {};
-        // const collections = ["articles", "categories", "products", "articlecategories", "variants", "varianttypes"];
         contentTypes.map(contentType => {
             promises.push(contentType.getAll().then(data => {
                 results[contentType.getName()] = data;
@@ -22,21 +39,34 @@ const getAllData = () => {
         });
     });
 };
-const deleteAllData = ()=> {
+const getAllData = () => {
+    return getDataByContentTypes(contentTypes);
+};
+const deleteAllData = () => {
     return new Promise(async resolve => {
         const promises = [];
-        contentTypes.map(contentType => {
+        deleteData.map(contentType => {
             promises.push(contentType.deleteAll().then(data => {
             }));
         });
-
         Promise.all(promises).then(() => {
             resolve();
         });
     });
 };
 
+const migrateFirebase = async () => {
+    let migrateFirebaseTasks = [];
+    const migrateSingleTask = createTasks(migrateFirebaseTasks);
+    migrateAll.map(contentType => migrateSingleTask(async () => {
+        await contentType.migrate();
+    }));
+    await executeTasks(migrateFirebaseTasks, {thread: 1});
+};
+
 module.exports = {
     getAllData,
-    deleteAllData
+    deleteAllData,
+    migrateFirebase,
+    getDataByContentTypes
 };

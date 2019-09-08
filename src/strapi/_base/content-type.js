@@ -22,7 +22,7 @@ const deleteAll = contentName => async () => {
     data.map(item => deleteSingleTask(async () => {
         await deleteRow(contentName)(item._id);
     }));
-    await executeTasks(deleteAllTasks, {});
+    await executeTasks(deleteAllTasks, { thread: 100});
 };
 const deleteRow = contentName => _id => {
     return new Promise(resolve => {

@@ -21,13 +21,13 @@ const index = {
 			search_volume: {
 				type: "integer"
 			},
-			click: {
+			clicks: {
 				type: "integer"
 			},
 			ctr: {
 				type: "float"
 			},
-			impression: {
+			impressions: {
 				type: "integer"
 			},
 			position: {

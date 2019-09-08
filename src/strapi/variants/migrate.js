@@ -1,4 +1,8 @@
 const variants = require("./variants");
 const data = require("../../data-examples/ifarmer").variants;
 
-variants.createAll(data);
+const migrate = () => variants.createAll(data);
+
+module.exports = {
+    migrate
+};

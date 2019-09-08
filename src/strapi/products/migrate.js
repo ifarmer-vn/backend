@@ -1,4 +1,8 @@
 const products = require("./products");
 const data = require("../../data-examples/ifarmer").products;
 
-products.createAll(data);
+const migrate = () => products.createAll(data);
+
+module.exports = {
+    migrate
+};

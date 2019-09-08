@@ -1,7 +1,11 @@
 const strapi = require("./strapi");
 
-function main() {
-    strapi.deleteAllData();
+async function main() {
+    await strapi.deleteAllData();
+    await strapi.migrateFirebase();
 }
+console.time("Start migrate firebase to strapi");
 
-main();
+main().then(()=>{
+    console.timeEnd("Start migrate firebase to strapi");
+});

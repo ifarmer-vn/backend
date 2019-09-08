@@ -1,20 +1,20 @@
 const request = require("request");
-const fs = require("fs");
+const {createTasks, executeTasks} = require("../../utils");
 const contentName = "articlecategories";
 const contentType = require("../_base/content-type");
 const update = contentType.update(contentName);
 const getAll = contentType.getAll(contentName);
 const deleteAll = contentType.deleteAll(contentName);
 
-const createAll = categories => {
-    return new Promise(async (resolve, reject) => {
-        for (const pp in categories) {
-            const category = categories[pp];
-            const res = await create(category);
-            console.log(res);
+const createAll = async data => {
+        let tasks = [];
+        const singleTask = createTasks(tasks);
+        for (const pp in data) {
+            let item = data[pp];
+            item.id = pp;
+            singleTask(async () => await create(item));
         }
-        resolve();
-    });
+        await executeTasks(tasks, {thread: 10});
 };
 const create = category => {
     return new Promise((resolve, reject) => {
@@ -24,7 +24,6 @@ const create = category => {
             url: `http://localhost:1337/${contentName}`,
         }, async function callback(error, response, body) {
             var info = JSON.parse(body);
-            console.log(info);
             resolve(info);
         }).form(mapped);
     });
