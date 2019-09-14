@@ -9,7 +9,7 @@ const path = require('path');
 const keyPath = path.join(__dirname, 'credential.json');
 console.log(keyPath);
 let keys = {
-    redirect_uris: ['http://localhost:3000/oauth2callback'],
+    redirect_uris: ['http://localhost:4000/oauth2callback'],
 };
 if (fs.existsSync(keyPath)) {
     const keyFile = require(keyPath);
@@ -21,7 +21,7 @@ redirect URI. There must be at least one redirect URI defined. Please edit
 your keyfile, and add a 'redirect_uris' section.  For example:
 
 "redirect_uris": [
-  "http://localhost:3000/oauth2callback"
+  "http://localhost:4000/oauth2callback"
 ]
 `;
 
@@ -37,7 +37,7 @@ class Oauth2Client {
         const parts = new url.URL(redirectUri);
         if (
             redirectUri.length === 0 ||
-            parts.port !== '3000' ||
+            parts.port !== '4000' ||
             parts.hostname !== 'localhost' ||
             parts.pathname !== '/oauth2callback'
         ) {
@@ -66,7 +66,7 @@ class Oauth2Client {
                 .createServer(async (req, res) => {
                     try {
                         if (req.url.indexOf('/oauth2callback') > -1) {
-                            const qs = new url.URL(req.url, 'http://localhost:3000')
+                            const qs = new url.URL(req.url, 'http://localhost:4000')
                                 .searchParams;
                             res.end(
                                 'Authentication successful! Please return to the console.'
@@ -80,7 +80,7 @@ class Oauth2Client {
                         reject(e);
                     }
                 })
-                .listen(3000, () => {
+                .listen(4000, () => {
                     // open the browser to the authorize url to start the workflow
                     opn(this.authorizeUrl, {wait: false}).then(cp => cp.unref());
                 });

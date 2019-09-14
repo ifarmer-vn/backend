@@ -39,6 +39,7 @@ const mapping = articleCategories => {
         title: articleCategories.title,
         description: articleCategories.shortDescription,
         popularity: articleCategories.popularity,
+        keywords: [],
         disable: articleCategories.hide
     };
 };

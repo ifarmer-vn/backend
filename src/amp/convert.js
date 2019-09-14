@@ -33,9 +33,9 @@ const ampToNoneAmp = content => {
         parsedData.map(item => {
             newContent = newContent.replace(item.img, item.uploadedImage);
         });
-        newContent = newContent
-            .replaceAll("<amp-img", "<img")
-            .replaceAll("><\/amp-img>", "\>");
+        // newContent = newContent
+            // .replaceAll("<amp-img", "<img")
+            // .replaceAll("><\/amp-img>", "\>");
         resolve(newContent);
     });
 };
