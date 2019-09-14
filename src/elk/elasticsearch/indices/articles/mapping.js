@@ -23,6 +23,12 @@ const index = {
             },
             article_category: {
                 type: "keyword"
+            },
+            category: {
+                type: "keyword"
+            },
+            articleCategorySource: {
+                type: "nested"
             }
         }
     }

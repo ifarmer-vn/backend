@@ -84,6 +84,7 @@ const mapping = variant => {
         title: variant.title,
         description: variant.shortDescription,
         disable: variant.hide,
+        keywords: [],
         variantTypes: variant.variantTypes
     };
 };

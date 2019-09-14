@@ -39,6 +39,9 @@ const mapping = product => {
         updatedAt: product.dateModified,
         title: product.title,
         price: product.price,
+        specs: [],
+        related_products: [],
+        related_articles: [],
         disable: product.hide
     };
 };

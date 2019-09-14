@@ -3,7 +3,16 @@ const index = {
 	mappings: {
 		properties:{
 			...baseMapping.mappings.properties,
+			"productSource":{
+				"type": "nested"
+			},
+			"categorySource": {
+				"type": "nested"
+			},
 			"extraTitle": {
+				"type": "keyword"
+			},
+			"title": {
 				"type": "keyword"
 			},
 			"price": {

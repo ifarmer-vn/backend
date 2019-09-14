@@ -3,9 +3,16 @@ const {createIndices} = require("./createIndices");
 const utils = require("../../../utils");
 const {migrateData} = require("./migrateData");
 
-const {getAllData} = require("../../../strapi/strapi");
+const {getDataByContentTypes} = require("../../../strapi/strapi");
 
-
+const contentTypes = [
+    require("../../../strapi/article-categories/article-categories"),
+    require("../../../strapi/articles/articles"),
+    require("../../../strapi/categories/categories"),
+    require("../../../strapi/products/products"),
+    require("../../../strapi/variant-types/variant-types"),
+    require("../../../strapi/variants/variants"),
+];
 // transformData(require('../../../../cms-data'));
 
 async function main() {
@@ -23,7 +30,7 @@ async function main() {
         });
 
         function getAllDataFromCMS() {
-            promises.push(getAllData().then(res => {
+            promises.push(getDataByContentTypes(contentTypes).then(res => {
                 data = res;
                 utils.saveDataToFile('cms-data.json', data);
             }));
@@ -43,24 +50,66 @@ async function main() {
         }
     });
 }
+
 function transformData(data) {
+    transformVariants(data);
+    transformArticles(data);
+}
+function transformVariants(data){
     let variants = data.variants;
     const products = data.products;
+    const categories = data.categories;
     variants.map(variant => {
         let product = R.find(R.propEq('url', variant.product))(products);
+
         if (product) {
-            variant.source = {
-                product: {
-                    url: product.url,
-                    title: product.title.trim()
-                }
+            let category = R.find(R.propEq('url', product.category))(categories);
+            variant.category = product.category;
+            variant.productSource = {
+                url: product.url,
+                title: product.title.trim()
             };
-            // console.log("variant", variant.source);
+            if(category){
+                variant.categorySource = {
+                    url: product.category,
+                    title: category.name.trim()
+                };
+            }else {
+                variant.categorySource = {};
+                console.log("missing category", variant.url, variant.product);
+            }
+
         } else {
+            variant.productSource = {};
             console.log("missing prod", variant.url, variant.product);
         }
     });
 }
+function transformArticles(data){
+    let articles = data.articles;
+    const articlecategories = data.articlecategories;
+    articles.map(article => {
+        let articleCategory = R.find(R.propEq('url', article.category))(articlecategories);
+        if(article.related_products){
+            article.related_products = [];
+        }
+
+        if(article.related_articles){
+            article.related_articles = [];
+        }
+
+        if (articleCategory) {
+            article.articleCategorySource = {
+                url: articleCategory.category,
+                title: category.name.trim()
+            };
+        } else {
+        }
+    });
+}
+
+
+
 console.time("Process");
 console.log("Process start");
 

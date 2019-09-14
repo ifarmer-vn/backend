@@ -45,7 +45,10 @@ const mapping = article => {
         updatedAt: article.dateModified,
         title: article.title,
         description: article.shortDescription,
-        disable: article.hide
+        related_products: article.product? [article.product]: [],
+        propagated_urls: [],
+        keywords: [],
+        disable: article.hide,
     };
 };
 

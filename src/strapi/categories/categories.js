@@ -42,7 +42,8 @@ const mapping = category => {
         title: category.title,
         description: category.shortDescription,
         popularity: category.popularity,
-        disable: category.hide
+        keywords: [],
+        disable: category.hide,
     };
 };
 
