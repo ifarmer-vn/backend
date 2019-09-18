@@ -12,6 +12,7 @@ const contentTypes = [
     require("../../../strapi/products/products"),
     require("../../../strapi/variant-types/variant-types"),
     require("../../../strapi/variants/variants"),
+    require("../../../strapi/pages/pages"),
 ];
 // transformData(require('../../../../cms-data'));
 
@@ -44,6 +45,7 @@ async function main() {
                 require("../indices/products"),
                 require("../indices/variant-types"),
                 require("../indices/variants"),
+                require("../indices/pages"),
             ];
             promises.push(createIndices(indices));
 

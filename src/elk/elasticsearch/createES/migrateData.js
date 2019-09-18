@@ -4,6 +4,7 @@ const categories = require("../indices/categories");
 const products = require("../indices/products");
 const variantTypes = require("../indices/variant-types");
 const variants = require("../indices/variants");
+const pages = require("../indices/pages");
 
 const migrateData = async (data) => {
     pushDataToES(categories)(data.categories);
@@ -12,6 +13,7 @@ const migrateData = async (data) => {
     pushDataToES(products)(data.products);
     pushDataToES(variantTypes)(data.varianttypes);
     pushDataToES(variants)(data.variants);
+    pushDataToES(pages)(data.pages);
 };
 
 const pushDataToES = index => async docs => {
