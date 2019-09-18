@@ -16,7 +16,7 @@ const index = {
 				"type": "keyword"
 			},
 			"price": {
-				"type": "integer"
+				"type": "keyword"
 			},
 			"product": {
 				"type": "keyword"
