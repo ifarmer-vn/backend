@@ -16,10 +16,10 @@ const index = {
                 type: "nested"
             },
             related_products: {
-                type: "nested"
+                type: "keyword"
             },
             related_articles: {
-                type: "nested"
+                type: "keyword"
             },
             article_category: {
                 type: "keyword"

@@ -93,11 +93,11 @@ function transformArticles(data){
     articles.map(article => {
         let articleCategory = R.find(R.propEq('url', article.category))(articlecategories);
         if(article.related_products){
-            article.related_products = [];
+            article.related_products = article.related_products.join();
         }
 
         if(article.related_articles){
-            article.related_articles = [];
+            article.related_articles = article.related_articles.join();
         }
 
         if (articleCategory) {
