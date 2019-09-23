@@ -39,7 +39,7 @@ const mapping = article => {
         url: article.id,
         name: article.name,
         author: article.author,
-        category: article.category,
+        article_category: article.category,
         content: article.content,
         createdAt: article.dateCreated,
         updatedAt: article.dateModified,
