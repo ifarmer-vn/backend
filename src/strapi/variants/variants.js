@@ -30,7 +30,7 @@ const create = variant => {
             var info = JSON.parse(body);
             let tasks = [];
             const singleTask = createTasks(tasks);
-            images.map(async image =>singleTask( async ()=>{
+            images.map(async image => singleTask(async () => {
                 await updateImage(info._id, image);
             }));
             await executeTasks(tasks, {thread: 1});
@@ -58,8 +58,13 @@ const downloadImage = async url => {
     return new Promise(async resolve => {
         if (!url.includes("https://")) {
             console.log("not in firebase", url);
-            url = url.replace(/\//g,'%2F');
-            url = `https://firebasestorage.googleapis.com/v0/b/ifarmer-e25f1.appspot.com/o/${url}?alt=media&token=6008e893-c74b-4bf0-be37-c1de0495202e`;
+            if (url.includes("/assets/img/")) {
+                resolve("/home/haibui/projects/ifarmer/backend/src/data-examples" + url);
+                return;
+            } else {
+                url = url.replace(/\//g, '%2F');
+                url = `https://firebasestorage.googleapis.com/v0/b/ifarmer-e25f1.appspot.com/o/${url}?alt=media&token=6008e893-c74b-4bf0-be37-c1de0495202e`;
+            }
         }
         const path = url.split("?")[0].split("%2F");
         const fileName = "/home/haibui/projects/ifarmer/backend/src/data-examples/tmp/" + path[path.length - 1];

@@ -1,5 +1,5 @@
 const R = require("ramda");
-const {createIndices} = require("./createIndices");
+const {createIndices, deleteIndices} = require("./createIndices");
 const utils = require("../../../utils");
 const {migrateData} = require("./migrateData");
 
@@ -14,14 +14,24 @@ const contentTypes = [
     require("../../../strapi/variants/variants"),
     require("../../../strapi/pages/pages"),
 ];
+const indices = [
+    require("../indices/article-categories"),
+    require("../indices/articles"),
+    require("../indices/categories"),
+    require("../indices/products"),
+    require("../indices/variant-types"),
+    require("../indices/variants"),
+    require("../indices/pages"),
+];
 // transformData(require('../../../../cms-data'));
 
 async function main() {
-    return new Promise(resolve => {
+    return new Promise(async resolve => {
         let promises = [];
         // let data = require("../../../../temp/data");
         // migrateData(data);
         let data;
+        await deleteIndices(indices);
         getAllDataFromCMS();
         createAllIndices();
         Promise.all(promises).then(() => {
@@ -38,20 +48,12 @@ async function main() {
         }
 
         function createAllIndices() {
-            const indices = [
-                require("../indices/article-categories"),
-                require("../indices/articles"),
-                require("../indices/categories"),
-                require("../indices/products"),
-                require("../indices/variant-types"),
-                require("../indices/variants"),
-                require("../indices/pages"),
-            ];
             promises.push(createIndices(indices));
 
         }
     });
 }
+
 
 function transformData(data) {
     transformVariants(data);

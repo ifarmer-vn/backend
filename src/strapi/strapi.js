@@ -7,23 +7,8 @@ const contentTypes = [
     require("./variant-types/variant-types"),
     require("./variants/variants"),
 ];
-const deleteData = [
-    require("./article-categories/article-categories"),
-    require("./articles/articles"),
-    require("./categories/categories"),
-    require("./products/products"),
-    require("./variant-types/variant-types"),
-    require("./variants/variants"),
-    require("./upload/upload"),
-];
-const migrateAll = [
-    require("./categories/migrate"),
-    require("./articles/migrate"),
-    require("./article-categories/migrate"),
-    require("./products/migrate"),
-    require("./variant-types/migrate"),
-    require("./variants/migrate"),
-];
+
+
 
 const getDataByContentTypes = contentTypes => {
     return new Promise(async resolve => {
@@ -42,7 +27,7 @@ const getDataByContentTypes = contentTypes => {
 const getAllData = () => {
     return getDataByContentTypes(contentTypes);
 };
-const deleteAllData = () => {
+const deleteAllData = (deleteData) => {
     return new Promise(async resolve => {
         const promises = [];
         deleteData.map(contentType => {
@@ -55,7 +40,7 @@ const deleteAllData = () => {
     });
 };
 
-const migrateFirebase = async () => {
+const migrateFirebase = async (migrateAll) => {
     let migrateFirebaseTasks = [];
     const migrateSingleTask = createTasks(migrateFirebaseTasks);
     migrateAll.map(contentType => migrateSingleTask(async () => {

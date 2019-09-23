@@ -11,6 +11,12 @@ const mapping = index => schema => {
             console.log(err, resp, respcode);
         })
 };
+const deleteIndex = index => {
+    console.log("deleteIndices", index);
+    return client.indices.delete({
+        index: index,
+    });
+};
 
 const createDocument = index => doc => {
     const body = [{index: {_index: index}}, doc];
@@ -53,6 +59,7 @@ const pushBulk = bulks => {
 
 const revealed = {
     mapping,
+    deleteIndex,
     createDocument,
     v,
     createBulk,
