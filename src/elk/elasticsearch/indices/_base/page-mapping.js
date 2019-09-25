@@ -13,7 +13,7 @@ const index = {
 				type: "text"
 			},
 			title: {
-				type: "keyword"
+				type: "text"
 			},
 			robots: {
 				type: "keyword"

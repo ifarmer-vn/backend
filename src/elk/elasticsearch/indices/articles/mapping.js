@@ -28,7 +28,15 @@ const index = {
                 type: "keyword"
             },
             articleCategorySource: {
-                type: "nested"
+                type: "nested",
+                "properties": {
+                    "url": {
+                        "type": "text"
+                    },
+                    "title": {
+                        "type": "text"
+                    }
+                }
             }
         }
     }
