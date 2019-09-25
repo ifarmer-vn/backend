@@ -4,10 +4,26 @@ const index = {
 		properties:{
 			...baseMapping.mappings.properties,
 			"productSource":{
-				"type": "nested"
+				"type": "nested",
+				"properties": {
+					"url": {
+						"type": "text"
+					},
+					"title": {
+						"type": "text"
+					}
+				}
 			},
 			"categorySource": {
-				"type": "nested"
+				"type": "nested",
+				"properties": {
+					"url": {
+						"type": "text"
+					},
+					"title": {
+						"type": "text"
+					}
+				}
 			},
 			"extraTitle": {
 				"type": "keyword"
