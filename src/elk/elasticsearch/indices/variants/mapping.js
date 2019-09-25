@@ -31,6 +31,9 @@ const index = {
 			"title": {
 				"type": "keyword"
 			},
+			"category":{
+				"type": "keyword"
+			},
 			"price": {
 				"type": "keyword"
 			},
