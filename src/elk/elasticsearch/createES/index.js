@@ -98,7 +98,7 @@ function transformArticles(data){
             article.related_products = article.related_products.join();
         }
 
-        if(article.related_articles){
+        if(article.related_articles && article.related_articles.length){
             article.related_articles = article.related_articles.join();
         }
 
