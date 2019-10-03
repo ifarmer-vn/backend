@@ -15,14 +15,15 @@ const getAll = contentName => () => {
 
 
 const deleteAll = contentName => async () => {
-    const data = await getAll(contentName)();
+    let data = await getAll(contentName)();
     console.log("delete total", data.length);
+    data = data.length ? data : [];
     let deleteAllTasks = [];
     const deleteSingleTask = createTasks(deleteAllTasks);
     data.map(item => deleteSingleTask(async () => {
         await deleteRow(contentName)(item._id);
     }));
-    await executeTasks(deleteAllTasks, { thread: 100});
+    await executeTasks(deleteAllTasks, {thread: 100});
 };
 const deleteRow = contentName => _id => {
     return new Promise(resolve => {
