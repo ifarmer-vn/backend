@@ -7,6 +7,7 @@ const updateRow = (row, model) => {
 };
 const updateData = async (data, model) => {
     let needUpdatedData = [];
+    console.log("updateData", model.getName(), data.length);
     let covertTasks = [];
     const addConvertTask = createTasks(covertTasks);
     data.map(async items => addConvertTask(async () => {
@@ -28,12 +29,12 @@ const updateData = async (data, model) => {
 
 async function main() {
     const contentTypes = [
-        // require("../strapi/articles/articles"),
+        require("../strapi/articles/articles"),
         require("../strapi/products/products"),
     ];
     const data = await getDataByContentTypes(contentTypes);
 
-    // await updateData(data.articles, require("../strapi/articles/articles"));
+    await updateData(data.articles, require("../strapi/articles/articles"));
     await updateData(data.products, require("../strapi/products/products"));
 }
 

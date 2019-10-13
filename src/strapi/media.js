@@ -43,7 +43,7 @@ const downloadImageFromFireBase = async url => {
     return new Promise(async resolve => {
         if (!url.includes("https://")) {
             console.log("not in firebase", url);
-            resolve("/home/haibui/projects/ifarmer/backend/src/data-examples/" + url.replace("..",""));
+            resolve("/home/haibui/projects/ifarmer/backend/src/data-examples/" + url.replace("../",""));
             return;
         }
         const path = url.split("?")[0].split("%2F");
