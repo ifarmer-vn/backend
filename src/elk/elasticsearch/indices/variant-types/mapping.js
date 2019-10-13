@@ -1,5 +1,8 @@
 const baseMapping = require("../_base/base-mapping");
 const index = {
+    settings: {
+        ...baseMapping.settings
+    },
     mappings: {
         properties: {
         	...baseMapping.mappings.properties,

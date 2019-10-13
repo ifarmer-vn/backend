@@ -1,4 +1,9 @@
 const index = {
+	settings:{
+		index: {
+			auto_expand_replicas: "0-1"
+		},
+	},
 	mappings: {
 		properties:{
 			disable: {

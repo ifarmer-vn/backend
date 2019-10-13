@@ -22,8 +22,10 @@ const imgToAmpImg = content => {
     imgTagRegexMatching(content, matches => {
         const img = matches[0];
         let replace = img.replace("<img", "<amp-img");
-        if (!img.includes(`width="`)) {
-            replace = replace.replace(`/>`,`/>`).replace(`>`, `width="1600" height="900" layout="responsive"></amp-img>`);
+        if (!img.includes(`width="`) || !img.includes(`height="`) || !img.includes(`layout="`)) {
+            replace = replace
+                .replace(`width="100%"`,``)
+                .replace(`/>`,`/>`).replace(`>`, `width="1600" height="900" layout="responsive"></amp-img>`);
         } else {
             replace = replace.replace(`/>`,`/>`).replace(`>`, `></amp-img>`);
         }
