@@ -1,6 +1,6 @@
 const fs = require('fs');
 const saveDataToFile = (path, data) => {
-    fs.writeFileSync(path,JSON.stringify(data) );
+    fs.writeFileSync(path, JSON.stringify(data));
 };
 const updateRawDataInToFile = (file, data) => {
     return new Promise(resolve => {
@@ -30,7 +30,6 @@ const getDataFromCSV = path => {
     });
     return defered;
 };
-
 const regexMatching = regexString => (str, cb) => {
     return new Promise(async resolve => {
         let matches;
@@ -45,8 +44,14 @@ const regexMatching = regexString => (str, cb) => {
         resolve();
     });
 };
+const regexMatchingSync = regexString => (str, cb) => {
+    let matches;
+    while ((matches = regexString.exec(str))) {
+        cb(matches);
+    }
+};
 
-String.prototype.replaceAll = function(search, replacement) {
+String.prototype.replaceAll = function (search, replacement) {
     let target = this;
     return target.replace(new RegExp(search, 'g'), replacement);
 };
@@ -84,6 +89,7 @@ const revealed = {
     executeTasks,
     getDataFromCSV,
     regexMatching,
+    regexMatchingSync,
     executeAsync
 };
 

@@ -42,7 +42,7 @@ const ampToNoneAmp = content => {
 };
 
 const revealed = {
-    parse,
+    parse: parse,
     ampToNoneAmp,
 };
 
