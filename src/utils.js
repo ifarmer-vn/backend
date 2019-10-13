@@ -34,33 +34,33 @@ const getDataFromCSV = path => {
 const regexMatching = regexString => (str, cb) => {
     return new Promise(async resolve => {
         let matches;
-        console.time("regexMatching" + str.length);
-        console.log("regexString", regexString);
+        // console.time("regexMatching" + str.length);
+        // console.log("regexString", regexString);
         while ((matches = regexString.exec(str))) {
             // console.log("start cb");
             await cb(matches);
             // console.log("end  cb");
         }
-        console.timeEnd("regexMatching" + str.length);
+        // console.timeEnd("regexMatching" + str.length);
         resolve();
     });
 };
 
 String.prototype.replaceAll = function(search, replacement) {
-    var target = this;
+    let target = this;
     return target.replace(new RegExp(search, 'g'), replacement);
 };
 
 const executeAsync = tasks => {
-    const timeStart = "timeStart-" + (+new Date());
-    console.time(timeStart);
+    // const timeStart = "timeStart-" + (+new Date());
+    // console.time(timeStart);
     return new Promise(resolve => {
         let promises = [];
         tasks.map(task => {
             promises.push(task());
         });
         Promise.all(promises).then(() => {
-            console.timeEnd(timeStart);
+            // console.timeEnd(timeStart);
             resolve();
         });
     });
