@@ -18,6 +18,35 @@ const deleteIndex = index => {
     });
 };
 
+const scrollScan = index => query => {
+    return new Promise(resolve => {
+        let allRecords = [];
+        client.search({
+            index: index,
+            scroll: '10s',
+            body: {
+                query
+            },
+            size: 1000
+        }, function getMoreUntilDone(error, response) {
+            // collect all the records
+            if (error) {
+                console.log(error);
+            }
+            allRecords = allRecords.concat(response.hits.hits);
+            if (response.hits.total.value !== allRecords.length) {
+                client.scroll({
+                    scroll: '10s',
+                    scrollId: response._scroll_id,
+                }, getMoreUntilDone);
+            } else {
+                resolve(allRecords);
+                console.log('get', index, allRecords.length);
+            }
+        });
+    });
+};
+
 const createDocument = index => doc => {
     const body = [{index: {_index: index}}, doc];
     return client.bulk({
@@ -59,6 +88,7 @@ const pushBulk = bulks => {
 
 const revealed = {
     mapping,
+    scrollScan,
     deleteIndex,
     createDocument,
     v,
