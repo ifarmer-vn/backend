@@ -1,5 +1,5 @@
 const request = require("request");
-const media = require("../media");
+const media = require("../../image/media");
 const {createTasks, executeTasks} = require("../../utils");
 const contentName = "articles";
 const contentType = require("../_base/content-type");

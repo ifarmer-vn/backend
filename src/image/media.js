@@ -1,12 +1,26 @@
 const request = require("request");
 const fs = require("fs");
+const sharp = require("sharp");
+const utils = require("../utils");
+
+const crop = async (filePath, desFolder, x, y) => {
+    return new Promise(resolve => {
+        return sharp(filePath).resize(x, y).toFile(desFolder, (err, info) => {
+            console.log("Cropped file", desFolder);
+            resolve(desFolder);
+        });
+
+    });
+};
+
+
 const upload = (modelName, fieldName) => (refId, filePath, path) => {
     return new Promise((resolve, reject) => {
         const formData = {
             // files: request(url),
             to: JSON.stringify({
                 "refId": refId,
-            "path": path,
+                "path": path,
                 "ref": modelName,
                 "field": fieldName
             })
@@ -29,7 +43,6 @@ const upload = (modelName, fieldName) => (refId, filePath, path) => {
     });
 };
 const download = function (uri, filename) {
-    console.log(uri);
     return new Promise(resolve => {
         request.head(uri, function (err, res, body) {
             request(uri).pipe(fs.createWriteStream(filename)).on('close', () => {
@@ -43,7 +56,7 @@ const downloadImageFromFireBase = async url => {
     return new Promise(async resolve => {
         if (!url.includes("https://")) {
             console.log("not in firebase", url);
-            resolve("/home/haibui/projects/ifarmer/backend/src/data-examples/" + url.replace("../",""));
+            resolve("/home/haibui/projects/ifarmer/backend/src/data-examples/" + url.replace("../", ""));
             return;
         }
         const path = url.split("?")[0].split("%2F");
@@ -55,6 +68,7 @@ const downloadImageFromFireBase = async url => {
 };
 
 const revealed = {
+    crop,
     upload,
     download,
     downloadImageFromFireBase

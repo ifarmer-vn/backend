@@ -1,6 +1,6 @@
 const request = require("request");
 const {createTasks, executeTasks} = require("../../utils");
-const media = require("../media");
+const media = require("../../image/media");
 const contentName = "categories";
 const contentType = require("../_base/content-type");
 const update = contentType.update(contentName);
