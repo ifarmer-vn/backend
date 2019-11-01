@@ -1,4 +1,11 @@
 const fs = require('fs');
+
+const createDir = (dir) => {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+};
+
 const saveDataToFile = (path, data) => {
     fs.writeFileSync(path, JSON.stringify(data));
 };
@@ -83,6 +90,7 @@ const executeTasks = async (tasks, opt) => {
     }
 };
 const revealed = {
+    createDir,
     saveDataToFile,
     updateRawDataInToFile,
     createTasks,
