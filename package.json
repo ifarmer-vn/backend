@@ -18,6 +18,8 @@
   "homepage": "https://github.com/ifarmer-vn/backend#readme",
   "dependencies": {
     "elasticsearch": "^16.3.0",
+    "firebase": "^7.2.3",
+    "firebase-admin": "^8.7.0",
     "googleapis": "^42.0.0",
     "imagemin": "^7.0.0",
     "imagemin-webp": "^5.1.0",
