@@ -8,6 +8,7 @@ const deleteIndex = () => base.deleteIndex(index);
 
 const createDocument = (doc) => base.createDocument(index)(doc);
 const createBulk = (doc) => base.createBulk(index)(doc);
+const updateBulk = (doc) => base.updateBulk(index)(doc);
 const getAll = async () => {
 	const variants = await scrollScan();
 	return variants;
@@ -19,6 +20,7 @@ const revealed = {
     mapping,
 	deleteIndex,
 	createBulk,
+	updateBulk,
 	getAll,
     createDocument
 };

@@ -1,6 +1,6 @@
 const cmsVariants = require("../strapi/variants/variants");
 const esVariants = require("../elk/elasticsearch/indices/variants/index");
-
+const variantIndex = require("../elk/elasticsearch/indices/variants/index");
 const getAllVariantsInCMS = async () => {
     let variants = await cmsVariants.getAll();
     let result = {};
@@ -40,9 +40,15 @@ const checkDataNeedProcessImages = (cmsData, esData) => {
     return result;
 };
 const main = async () => {
-    const cmsVariantsData = await getAllVariantsInCMS();
-    const esVariantsData = await getAllVariantsInES();
-    checkDataNeedProcessImages(cmsVariantsData, esVariantsData);
+
+    let variant1 = {
+        _id: "1",
+        name: "bach-tuoc"
+    };
+    variantIndex.updateBulk([variant1]);
+    // const cmsVariantsData = await getAllVariantsInCMS();
+    // const esVariantsData = await getAllVariantsInES();
+    // checkDataNeedProcessImages(cmsVariantsData, esVariantsData);
 };
 
 console.time('Start Enrich images');

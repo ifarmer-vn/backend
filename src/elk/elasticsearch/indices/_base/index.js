@@ -75,6 +75,21 @@ const createBulk = index => docs => {
     }
     return bulks;
 };
+
+const updateBulk = index => docs => {
+    let bulks = [];
+    for (let i = 0; i < docs.length; i++) {
+        let doc = docs[i];
+        bulks.push({update: {_index: index, _id: doc._id}});
+        delete doc._id;
+        bulks.push({doc});
+    }
+    if (bulks.length > 0) {
+        pushBulk(bulks);
+    }
+    console.log(JSON.stringify(bulks));
+    return bulks;
+};
 const pushBulk = bulks => {
     return client.bulk(
         {
@@ -93,6 +108,7 @@ const revealed = {
     createDocument,
     v,
     createBulk,
+    updateBulk,
     pushBulk
 };
 
