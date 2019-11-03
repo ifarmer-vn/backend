@@ -87,7 +87,7 @@ const updateBulk = index => docs => {
     if (bulks.length > 0) {
         pushBulk(bulks);
     }
-    console.log(JSON.stringify(bulks));
+    // console.log(JSON.stringify(bulks));
     return bulks;
 };
 const pushBulk = bulks => {
