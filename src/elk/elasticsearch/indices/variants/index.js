@@ -8,7 +8,7 @@ const deleteIndex = () => base.deleteIndex(index);
 
 const createDocument = (doc) => base.createDocument(index)(doc);
 const createBulk = (doc) => base.createBulk(index)(doc);
-const updateBulk = (doc) => base.updateBulk(index)(doc);
+const updateBulk = (docs) => base.updateBulk(index)(docs);
 const getAll = async () => {
 	const variants = await scrollScan();
 	return variants;

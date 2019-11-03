@@ -6,8 +6,8 @@ const utils = require("../utils");
 const crop = async (filePath, desFolder, x, y) => {
     return new Promise(resolve => {
         return sharp(filePath).resize(x, y).toFile(desFolder, (err, info) => {
-            console.log("Cropped file", desFolder);
-            resolve(desFolder);
+            // console.log("Cropped file", desFolder);
+            resolve(desFolder, x, y);
         });
 
     });
@@ -46,7 +46,7 @@ const download = function (uri, filename) {
     return new Promise(resolve => {
         request.head(uri, function (err, res, body) {
             request(uri).pipe(fs.createWriteStream(filename)).on('close', () => {
-                console.log("downloaded", filename);
+                // console.log("downloaded", filename);
                 resolve(filename);
             });
         });

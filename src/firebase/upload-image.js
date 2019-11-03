@@ -10,7 +10,10 @@ function upload(filePath, destination) {
             if (err) {
                 console.log(err);
             }
-            return resolve(file);
+            const metadata = file.metadata;
+            const url = `https://storage.googleapis.com/${metadata.bucket}/${metadata.name}`;
+            // console.log(url);
+            return resolve(url);
         });
     });
 }
