@@ -24,6 +24,9 @@ const index = {
             images: {
                 type: "nested"
             },
+            transformedImages: {
+                type: "nested"
+            },
             search_volume: {
                 type: "integer"
             },

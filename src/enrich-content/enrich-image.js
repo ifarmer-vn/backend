@@ -12,7 +12,6 @@ const getAllVariantsInCMS = async () => {
     variants.map((item) => {
         result[item["url"]] = item;
     });
-    // console.log(result["qua-anh-dao-loai-dac-biet-trong-luong-2-kg"]['images']);
     return result;
 };
 
@@ -22,7 +21,6 @@ const getAllVariantsInES = async () => {
     variants.map((item) => {
         result[item['_source']["url"]] = item;
     });
-    // console.log(result["qua-anh-dao-loai-dac-biet-trong-luong-2-kg"]['_source']['images']);
     return result;
 };
 
@@ -30,7 +28,22 @@ const checkDataNeedProcessImages = (cmsData, esData) => {
     let result = [];
     for (let pp in esData) {
         if (esData[pp]['_source']['images']) {
-            if (esData[pp]['_source']['transformedHash'] !== cmsData[pp]['images']['hash']) {
+            const transformedImages = esData[pp]._source.transformedImages;
+            const images = esData[pp]._source.images;
+            if (transformedImages) {
+                for (let i = 0; i < images.length; i++) {
+                    let transformedImage = transformedImages[i];
+                    if (!transformedImage) {
+                        result.push(esData[pp]);
+                        return result;
+                    } else {
+                        if (transformedImage.hash !== images[i].hash) {
+                            result.push(esData[pp]);
+                            return result;
+                        }
+                    }
+                }
+            } else {
                 result.push(esData[pp]);
                 return result;
             }
@@ -38,19 +51,17 @@ const checkDataNeedProcessImages = (cmsData, esData) => {
             console.log("missing images", pp);
         }
     }
-    console.log('Data need transform', result.length);
     return result;
 };
 const main = async () => {
-
-
     const cmsVariantsData = await getAllVariantsInCMS();
     const esVariantsData = await getAllVariantsInES();
     let variants = checkDataNeedProcessImages(cmsVariantsData, esVariantsData);
+    console.log('Data need transform', variants.length);
     await transform(variants);
 };
 
-const transform = async (variants) => {
+const transform = async (arr) => {
     const timestamp = +new Date();
     const tempFolder = `temp/transform-images/tmp_${timestamp}`;
     const croppedFolder = `temp/transform-images/cropped_${timestamp}`;
@@ -60,33 +71,49 @@ const transform = async (variants) => {
     utils.createDir(processedFolder);
     utils.createDir(tempFolder);
     let updatedVariants = [];
-    for (let i = 0; i < variants.length; i++) {
-        let variant = variants[i];
-        const transformedImages = await processImage(variant);
-        console.log("Update Variant", variant._id)
+    for (let i = 0; i < arr.length; i++) {
+        let item = arr[i];
+        const images = item._source.images;
+        item._source.transformedImages = item._source.transformedImages ? item._source.transformedImages : [];
+        for (let j = 0; j < images.length; j++) {
+            let image = images[j];
+            if (!item._source.transformedImages[j]) {
+                const transformedImage = await processImage(image);
+                item._source.transformedImages.push({
+                    image: transformedImage,
+                    hash: image.hash
+                })
+            } else {
+                if (item._source.transformedImages[j].hash !== image.hash) {
+                    const transformedImage = await processImage(image);
+                    item._source.transformedImages[j] = {
+                        image: transformedImage,
+                        hash: image.hash
+                    }
+                }
+            }
+        }
         updatedVariants.push(
             {
-                _id: variant._id,
-                transformedImages,
-                transformedHash: variant._source.images.hash
+                _id: item._id,
+                transformedImages: item._source.transformedImages,
             }
         )
     }
     variantIndex.updateBulk(updatedVariants);
 
-    async function processImage(variant) {
-        const image = variant._source.images;
+    async function processImage(image) {
         const imageURL = image.url;
         const fileName = getFileName(imageURL);
-        const variantTempFolder = `${tempFolder}/${image.hash}`;
-        const variantCroppedFolder = `${croppedFolder}/${image.hash}`;
-        const variantProcessedFolder = `${processedFolder}/${image.hash}`;
-        utils.createDir(variantTempFolder);
-        utils.createDir(variantCroppedFolder);
-        utils.createDir(variantProcessedFolder);
-        await media.download(imageURL, `${variantTempFolder}/${fileName}`);
-        await cropImage(`${variantTempFolder}/${fileName}`, variantCroppedFolder);
-        const transformedImages = await transformImage(variantCroppedFolder, variantProcessedFolder);
+        const dataTempFolder = `${tempFolder}/${image.hash}`;
+        const dataCroppedFolder = `${croppedFolder}/${image.hash}`;
+        const dataProcessedFolder = `${processedFolder}/${image.hash}`;
+        utils.createDir(dataTempFolder);
+        utils.createDir(dataCroppedFolder);
+        utils.createDir(dataProcessedFolder);
+        await media.download(imageURL, `${dataTempFolder}/${fileName}`);
+        await cropImage(`${dataTempFolder}/${fileName}`, dataCroppedFolder);
+        const transformedImages = await transformImage(dataCroppedFolder, dataProcessedFolder);
         return await uploadImages(transformedImages, image.hash);
     }
 };
