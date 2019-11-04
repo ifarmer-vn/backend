@@ -24,10 +24,10 @@ const imgToAmpImg = content => {
         let replace = img.replace("<img", "<amp-img");
         if (!img.includes(`width="`) || !img.includes(`height="`) || !img.includes(`layout="`)) {
             replace = replace
-                .replace(`width="100%"`,``)
-                .replace(`/>`,`/>`).replace(`>`, `width="1600" height="900" layout="responsive"></amp-img>`);
+                .replace(`width="100%"`, ``)
+                .replace(`/>`, `/>`).replace(`>`, `width="1600" height="900" layout="responsive"></amp-img>`);
         } else {
-            replace = replace.replace(`/>`,`/>`).replace(`>`, `></amp-img>`);
+            replace = replace.replace(`/>`, `/>`).replace(`>`, `></amp-img>`);
         }
         result.push({
             origin: img,
@@ -51,7 +51,6 @@ function transformVariants(data) {
     const categories = data.categories;
     variants.map(variant => {
         let product = R.find(R.propEq('url', variant.product))(products);
-
         if (product) {
             let category = R.find(R.propEq('url', product.category))(categories);
             variant.category = product.category;
@@ -75,6 +74,7 @@ function transformVariants(data) {
         }
     });
 }
+
 
 function transformArticles(data) {
     let articles = data.articles;
