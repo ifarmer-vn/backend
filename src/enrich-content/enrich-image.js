@@ -1,51 +1,39 @@
 const cmsVariants = require("../strapi/variants/variants");
-const esVariants = require("../elk/elasticsearch/indices/variants/index");
-const variantIndex = require("../elk/elasticsearch/indices/variants/index");
+const cmsArticles = require("../strapi/articles/articles");
+const cmsCategories = require("../strapi/categories/categories");
 const media = require("../image/media");
 const utils = require("../utils");
 const imagemin = require('imagemin');
 const imageminWebp = require('imagemin-webp');
 const uploadImage = require("../firebase/upload-image");
-const getAllVariantsInCMS = async () => {
-    let variants = await cmsVariants.getAll();
+
+const getDataInCMS = async (cmsCollection) => {
+    let data = await cmsCollection.getAll();
     let result = {};
-    variants.map((item) => {
+    data.map((item) => {
         result[item["url"]] = item;
     });
     return result;
 };
-
-const getAllVariantsInES = async () => {
-    const variants = await esVariants.getAll();
-    let result = {};
-    variants.map((item) => {
-        result[item['_source']["url"]] = item;
-    });
-    return result;
-};
-
-const checkDataNeedProcessImages = (cmsData, esData) => {
+const checkDataNeedProcessImages = (cmsData) => {
     let result = [];
-    for (let pp in esData) {
-        if (esData[pp]['_source']['images']) {
-            const transformedImages = esData[pp]._source.transformedImages;
-            const images = esData[pp]._source.images;
+    for (let pp in cmsData) {
+        if (cmsData[pp].images) {
+            const transformedImages = cmsData[pp].transformedImages;
+            const images = cmsData[pp].images;
             if (transformedImages) {
                 for (let i = 0; i < images.length; i++) {
                     let transformedImage = transformedImages[i];
                     if (!transformedImage) {
-                        result.push(esData[pp]);
-                        return result;
+                        result.push(cmsData[pp]);
                     } else {
                         if (transformedImage.hash !== images[i].hash) {
-                            result.push(esData[pp]);
-                            return result;
+                            result.push(cmsData[pp]);
                         }
                     }
                 }
             } else {
-                result.push(esData[pp]);
-                return result;
+                result.push(cmsData[pp]);
             }
         } else {
             console.log("missing images", pp);
@@ -54,14 +42,35 @@ const checkDataNeedProcessImages = (cmsData, esData) => {
     return result;
 };
 const main = async () => {
-    const cmsVariantsData = await getAllVariantsInCMS();
-    const esVariantsData = await getAllVariantsInES();
-    let variants = checkDataNeedProcessImages(cmsVariantsData, esVariantsData);
+    const cmsVariantsData = await getDataInCMS(cmsVariants);
+    const cmsArticlesData = await getDataInCMS(cmsArticles);
+    const cmsCategoriesData = await getDataInCMS(cmsCategories);
+    let variants = checkDataNeedProcessImages(cmsVariantsData);
+    let articles = checkDataNeedProcessImages(cmsArticlesData);
+    let categories = checkDataNeedProcessImages(cmsCategoriesData);
     console.log('Data need transform', variants.length);
-    await transform(variants);
+    await transform(articles,cmsArticles);
+    await transform(categories,cmsCategories);
+    await transform(variants, cmsVariants);
+};
+const deleteImages = async (images) => {
+    if(!images){
+        return;
+    }
+    let promises = [];
+    for (let i = 0; i < images.length; i++) {
+        const transformedImages = images[i].image;
+        for (let pp in transformedImages) {
+            promises.push(deleteImage(transformedImages[pp].name));
+        }
+    }
+    await Promise.all(promises);
+};
+const deleteImage = async (imgName) => {
+    return uploadImage.remove(imgName);
 };
 
-const transform = async (arr) => {
+const transform = async (arr, cmsCollection) => {
     const timestamp = +new Date();
     const tempFolder = `temp/transform-images/tmp_${timestamp}`;
     const croppedFolder = `temp/transform-images/cropped_${timestamp}`;
@@ -70,37 +79,26 @@ const transform = async (arr) => {
     utils.createDir(croppedFolder);
     utils.createDir(processedFolder);
     utils.createDir(tempFolder);
-    let updatedVariants = [];
     for (let i = 0; i < arr.length; i++) {
         let item = arr[i];
-        const images = item._source.images;
-        item._source.transformedImages = item._source.transformedImages ? item._source.transformedImages : [];
+        const images = item.images;
+        console.log("Delete images", item._id);
+        await deleteImages(item.transformedImages);
+        let transformedImages = [];
         for (let j = 0; j < images.length; j++) {
             let image = images[j];
-            if (!item._source.transformedImages[j]) {
-                const transformedImage = await processImage(image);
-                item._source.transformedImages.push({
-                    image: transformedImage,
-                    hash: image.hash
-                })
-            } else {
-                if (item._source.transformedImages[j].hash !== image.hash) {
-                    const transformedImage = await processImage(image);
-                    item._source.transformedImages[j] = {
-                        image: transformedImage,
-                        hash: image.hash
-                    }
-                }
-            }
+            const transformedImage = await processImage(image);
+            transformedImages.push({
+                image: transformedImage,
+                hash: image.hash
+            })
         }
-        updatedVariants.push(
-            {
-                _id: item._id,
-                transformedImages: item._source.transformedImages,
-            }
-        )
+        await cmsCollection.update({
+            _id: item._id,
+            transformedImages: transformedImages,
+        });
+
     }
-    variantIndex.updateBulk(updatedVariants);
 
     async function processImage(image) {
         const imageURL = image.url;
@@ -124,9 +122,9 @@ const uploadImages = async (images, hash) => {
         const image = images[i];
         const fileName = getFileName(image);
         const destination = `a/${hash}/${fileName}`;
-        const url = await uploadImage.upload(image, destination);
-        const sizeName = getTypeSize(url);
-        result[sizeName] = url;
+        const uploadedImg = await uploadImage.upload(image, destination);
+        const sizeName = getTypeSize(uploadedImg.url);
+        result[sizeName] = uploadedImg;
     }
     return result;
 };

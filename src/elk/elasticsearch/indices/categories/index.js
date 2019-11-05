@@ -9,10 +9,10 @@ const createDocument = (doc) => base.createDocument(index)(doc);
 const createBulk = (doc) => base.createBulk(index)(doc);
 
 const revealed = {
-	mapping,
-deleteIndex,
-	createBulk,
-	createDocument
+    mapping,
+    deleteIndex,
+    createBulk,
+    createDocument
 
 };
 
