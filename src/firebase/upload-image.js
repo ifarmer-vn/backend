@@ -1,7 +1,7 @@
 const firebaseStorage = require('./firebase-storage');
 const storageRef = firebaseStorage.storage().bucket();
 
-function upload(filePath, destination) {
+const upload = (filePath, destination) => {
     const options = {
         destination: destination
     };
@@ -11,13 +11,26 @@ function upload(filePath, destination) {
                 console.log(err);
             }
             const metadata = file.metadata;
+
             const url = `https://storage.googleapis.com/${metadata.bucket}/${metadata.name}`;
             // console.log(url);
-            return resolve(url);
+            return resolve({
+                url,
+                name: metadata.name
+            });
         });
     });
 }
 
+const remove = (nameImg) => {
+    const file = storageRef.file(nameImg);
+    return file.delete().then(function() {
+    }).catch(function(error) {
+        console.log(error.message);
+    });
+};
+
 module.exports = {
-    upload
+    upload,
+    remove
 };
