@@ -85,7 +85,7 @@ const executeTasks = async (tasks, opt) => {
     const thread = opt.thread || 10;
     let currentTasks = tasks.splice(0, thread);
     while (currentTasks.length) {
-        await executeAsync(currentTasks)
+        await executeAsync(currentTasks);
         currentTasks = tasks.splice(0, thread);
     }
 };
