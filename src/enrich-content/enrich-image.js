@@ -3,6 +3,7 @@ const cmsArticles = require("../strapi/articles/articles");
 const cmsCategories = require("../strapi/categories/categories");
 const media = require("../image/media");
 const utils = require("../utils");
+const {createTasks, executeTasks} = require("../utils");
 const imagemin = require('imagemin');
 const imageminWebp = require('imagemin-webp');
 const uploadImage = require("../firebase/upload-image");
@@ -49,12 +50,12 @@ const main = async () => {
     let articles = checkDataNeedProcessImages(cmsArticlesData);
     let categories = checkDataNeedProcessImages(cmsCategoriesData);
     console.log('Data need transform', variants.length);
-    await transform(articles,cmsArticles);
-    await transform(categories,cmsCategories);
+    await transform(articles, cmsArticles);
+    await transform(categories, cmsCategories);
     await transform(variants, cmsVariants);
 };
 const deleteImages = async (images) => {
-    if(!images){
+    if (!images) {
         return;
     }
     let promises = [];
@@ -70,6 +71,41 @@ const deleteImage = async (imgName) => {
     return uploadImage.remove(imgName);
 };
 
+const transformData = async (data, cmsCollection, tempFolder, croppedFolder, processedFolder) => {
+    const images = data.images;
+    if (data.transformedImages) {
+        console.log("Delete images", data._id);
+    }
+    await deleteImages(data.transformedImages);
+    let transformedImages = [];
+    for (let j = 0; j < images.length; j++) {
+        let image = images[j];
+        const transformedImage = await processImage(image, tempFolder, croppedFolder, processedFolder);
+        transformedImages.push({
+            image: transformedImage,
+            hash: image.hash
+        })
+    }
+    return await cmsCollection.update({
+        _id: data._id,
+        transformedImages: transformedImages,
+    });
+};
+const processImage = async (image, tempFolder, croppedFolder, processedFolder) => {
+    const imageURL = image.url;
+    const fileName = getFileName(imageURL);
+    const dataTempFolder = `${tempFolder}/${image.hash}`;
+    const dataCroppedFolder = `${croppedFolder}/${image.hash}`;
+    const dataProcessedFolder = `${processedFolder}/${image.hash}`;
+    utils.createDir(dataTempFolder);
+    utils.createDir(dataCroppedFolder);
+    utils.createDir(dataProcessedFolder);
+    await media.download(imageURL, `${dataTempFolder}/${fileName}`);
+    await cropImage(`${dataTempFolder}/${fileName}`, dataCroppedFolder);
+    const transformedImages = await transformImage(dataCroppedFolder, dataProcessedFolder);
+    return await uploadImages(transformedImages, image.hash);
+};
+
 const transform = async (arr, cmsCollection) => {
     const timestamp = +new Date();
     const tempFolder = `temp/transform-images/tmp_${timestamp}`;
@@ -79,41 +115,13 @@ const transform = async (arr, cmsCollection) => {
     utils.createDir(croppedFolder);
     utils.createDir(processedFolder);
     utils.createDir(tempFolder);
-    for (let i = 0; i < arr.length; i++) {
-        let item = arr[i];
-        const images = item.images;
-        console.log("Delete images", item._id);
-        await deleteImages(item.transformedImages);
-        let transformedImages = [];
-        for (let j = 0; j < images.length; j++) {
-            let image = images[j];
-            const transformedImage = await processImage(image);
-            transformedImages.push({
-                image: transformedImage,
-                hash: image.hash
-            })
-        }
-        await cmsCollection.update({
-            _id: item._id,
-            transformedImages: transformedImages,
-        });
 
-    }
-
-    async function processImage(image) {
-        const imageURL = image.url;
-        const fileName = getFileName(imageURL);
-        const dataTempFolder = `${tempFolder}/${image.hash}`;
-        const dataCroppedFolder = `${croppedFolder}/${image.hash}`;
-        const dataProcessedFolder = `${processedFolder}/${image.hash}`;
-        utils.createDir(dataTempFolder);
-        utils.createDir(dataCroppedFolder);
-        utils.createDir(dataProcessedFolder);
-        await media.download(imageURL, `${dataTempFolder}/${fileName}`);
-        await cropImage(`${dataTempFolder}/${fileName}`, dataCroppedFolder);
-        const transformedImages = await transformImage(dataCroppedFolder, dataProcessedFolder);
-        return await uploadImages(transformedImages, image.hash);
-    }
+    let updateTasks = [];
+    const addUpdateTask = createTasks(updateTasks);
+    arr.map(item => addUpdateTask(async () => {
+        await transformData(item, cmsCollection, tempFolder, croppedFolder, processedFolder)
+    }));
+    await executeTasks(updateTasks, {});
 };
 
 const uploadImages = async (images, hash) => {

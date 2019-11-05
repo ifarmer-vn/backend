@@ -4,7 +4,7 @@ const {createTasks, executeTasks} = require("../../utils");
 const getAll = contentName => () => {
     return new Promise(resolve => {
         request.get({
-            url: `http://localhost:1337/${contentName}?_limit=10`,
+            url: `http://localhost:1337/${contentName}?_limit=10000`,
         }, async function callback(error, response, body) {
             console.log("getAll", contentName);
             let info = JSON.parse(body);
