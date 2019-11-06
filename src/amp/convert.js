@@ -1,5 +1,5 @@
 const utils = require("../utils");
-const media = require("../strapi/media");
+const media = require("../image/media");
 const uploadImage = media.upload("", "");
 
 const parse = async content => {

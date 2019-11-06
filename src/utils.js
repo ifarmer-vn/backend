@@ -1,4 +1,11 @@
 const fs = require('fs');
+
+const createDir = (dir) => {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+};
+
 const saveDataToFile = (path, data) => {
     fs.writeFileSync(path, JSON.stringify(data));
 };
@@ -78,11 +85,12 @@ const executeTasks = async (tasks, opt) => {
     const thread = opt.thread || 10;
     let currentTasks = tasks.splice(0, thread);
     while (currentTasks.length) {
-        await executeAsync(currentTasks)
+        await executeAsync(currentTasks);
         currentTasks = tasks.splice(0, thread);
     }
 };
 const revealed = {
+    createDir,
     saveDataToFile,
     updateRawDataInToFile,
     createTasks,

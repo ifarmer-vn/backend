@@ -4,7 +4,7 @@ const {createTasks, executeTasks} = require("../../utils");
 const getAll = contentName => () => {
     return new Promise(resolve => {
         request.get({
-            url: `http://localhost:1337/${contentName}?_limit=100000`,
+            url: `http://localhost:1337/${contentName}?_limit=10000`,
         }, async function callback(error, response, body) {
             console.log("getAll", contentName);
             let info = JSON.parse(body);
@@ -42,8 +42,10 @@ const update = contentName => data => {
         request.put({
             url: `http://localhost:1337/${contentName}/${data._id}`
         }, async function callback(error, response, body) {
+            if(error){
+                console.log(error);
+            }
             const info = JSON.parse(body);
-            // console.log(info);
             resolve(info);
         }).form(data);
     });

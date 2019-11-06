@@ -18,6 +18,35 @@ const deleteIndex = index => {
     });
 };
 
+const scrollScan = index => query => {
+    return new Promise(resolve => {
+        let allRecords = [];
+        client.search({
+            index: index,
+            scroll: '10s',
+            body: {
+                query
+            },
+            size: 1000
+        }, function getMoreUntilDone(error, response) {
+            // collect all the records
+            if (error) {
+                console.log(error);
+            }
+            allRecords = allRecords.concat(response.hits.hits);
+            if (response.hits.total.value !== allRecords.length) {
+                client.scroll({
+                    scroll: '10s',
+                    scrollId: response._scroll_id,
+                }, getMoreUntilDone);
+            } else {
+                resolve(allRecords);
+                console.log('get', index, allRecords.length);
+            }
+        });
+    });
+};
+
 const createDocument = index => doc => {
     const body = [{index: {_index: index}}, doc];
     return client.bulk({
@@ -46,6 +75,21 @@ const createBulk = index => docs => {
     }
     return bulks;
 };
+
+const updateBulk = index => docs => {
+    let bulks = [];
+    for (let i = 0; i < docs.length; i++) {
+        let doc = docs[i];
+        bulks.push({update: {_index: index, _id: doc._id}});
+        delete doc._id;
+        bulks.push({doc});
+    }
+    if (bulks.length > 0) {
+        pushBulk(bulks);
+    }
+    // console.log(JSON.stringify(bulks));
+    return bulks;
+};
 const pushBulk = bulks => {
     return client.bulk(
         {
@@ -59,10 +103,12 @@ const pushBulk = bulks => {
 
 const revealed = {
     mapping,
+    scrollScan,
     deleteIndex,
     createDocument,
     v,
     createBulk,
+    updateBulk,
     pushBulk
 };
 

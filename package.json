@@ -18,12 +18,17 @@
   "homepage": "https://github.com/ifarmer-vn/backend#readme",
   "dependencies": {
     "elasticsearch": "^16.3.0",
+    "firebase": "^7.2.3",
+    "firebase-admin": "^8.7.0",
     "googleapis": "^42.0.0",
+    "imagemin": "^7.0.0",
+    "imagemin-webp": "^5.1.0",
     "jasmine": "^3.4.0",
     "mongodb": "^3.3.0-beta2",
     "open": "^6.4.0",
     "ramda": "^0.26.1",
     "request": "^2.88.0",
-    "server-destroy": "^1.0.1"
+    "server-destroy": "^1.0.1",
+    "sharp": "^0.23.2"
   }
 }
