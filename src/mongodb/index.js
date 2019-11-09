@@ -1,7 +1,8 @@
-const {getCollections} = require("./mongodb");
+const {getCollections, getAllData} = require("./mongodb");
 
 const revealed = {
-    getCollections
+    getCollections,
+    getAllData
 };
 
 module.exports = revealed;

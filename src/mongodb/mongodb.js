@@ -6,12 +6,9 @@ const uri = credential.uri;
 const connect = () => {
     return new Promise(resolve => {
         const client = new MongoClient(uri, {useNewUrlParser: true});
-        console.log("contect DB");
+        console.log("connect to Mongo DB");
         client.connect(err => {
-            console.log("contected");
             const db = client.db("strapi");
-            // .collection("articles");
-            // perform actions on the collection object
 
             resolve({client, db});
         });
@@ -38,6 +35,7 @@ const getCollectionData = (db, name) => {
         const promises = [];
         const collection = db.collection(name);
         const result = [];
+        console.log("getCollectionData", name);
         promises.push(collection.find().forEach(function (item) {
             // delete item._id;
             result.push(item);
@@ -50,9 +48,32 @@ const getCollectionData = (db, name) => {
 
 };
 
+const getAllData = async () => {
+    const collections = await getALlCollections();
+    return await getCollections(collections);
+};
+
+const getALlCollections = async () => {
+    return new Promise(async resolve => {
+        const repo = await connect();
+        repo.db.listCollections().toArray(function (err, collInfos) {
+            if (err) {
+                console.log(err);
+            }
+            let result = [];
+            collInfos.map(col => {
+                result.push(col.name);
+            });
+            resolve(result);
+        });
+    });
+};
+
+
 const revealed = {
     connect,
-    getCollections
+    getCollections,
+    getAllData
 };
 
 module.exports = revealed;
