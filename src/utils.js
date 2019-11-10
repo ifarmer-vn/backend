@@ -99,6 +99,10 @@ const getYYYYMMDD = ()=>{
     return `${year}-${month}-${day}`;
 };
 
+const getDataFromJSON = (jsonPath)=>{
+    return require(jsonPath);
+};
+
 const revealed = {
     getYYYYMMDD,
     createDir,
