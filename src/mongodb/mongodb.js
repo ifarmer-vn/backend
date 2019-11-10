@@ -2,8 +2,16 @@ const credential = require("./credential");
 
 const MongoClient = require('mongodb').MongoClient;
 
-const uri = credential.uri;
-const connect = () => {
+const uriProd = credential.uri;
+const uriQA = credential.uriQA;
+
+const connectProd = () => {
+    return connect(uriProd);
+};
+const connectQA = () => {
+    return connect(uriQA);
+};
+const connect = (uri) => {
     return new Promise(resolve => {
         const client = new MongoClient(uri, {useNewUrlParser: true});
         console.log("connect to Mongo DB");
@@ -16,7 +24,7 @@ const connect = () => {
 };
 const getCollections = collections => {
     return new Promise(async resolve => {
-        const repo = await connect();
+        const repo = await connectProd();
         const promises = [];
         const results = {};
         collections.map(async collection => {
@@ -48,14 +56,86 @@ const getCollectionData = (db, name) => {
 
 };
 
+const restoreData = async (collections) => {
+    await deleteALlQACollections();
+    for (let pp in collections) {
+        let data = collections[pp];
+        await createQACollection(pp);
+        await insertDataQACollection(pp, data);
+    }
+};
+
+const deleteALlQACollections = async () => {
+    let promises = [];
+    const collections = await getALlCollections(uriQA);
+    collections.map(col => {
+        promises.push(deleteQACollection(col));
+    });
+    return Promise.all(promises);
+};
+
+const createQACollections = async (collections) => {
+    let promises = [];
+    collections.map(col => {
+        promises.push(createQACollection(col));
+    });
+    return Promise.all(promises);
+};
+
+
+const createQACollection = async (name) => {
+    return new Promise(async resolve => {
+        const repo = await connectQA();
+        repo.db.createCollection(name, function (err, res) {
+            if (err) throw err;
+            console.log("Collection created!");
+            resolve(name);
+            repo.client.close();
+        });
+    });
+};
+const insertDataQACollection = async (name, data) => {
+    let promises = [];
+    const repo = await connectQA();
+    data.map(item => {
+        promises.push(insertOneCollection(repo.db, name, item));
+    });
+    return Promise.all(promises);
+};
+const insertOneCollection = async (db, name, item) => {
+    return new Promise(resolve => {
+        db.collection(name).insertOne(item, function (err, res) {
+            if (err) throw err;
+            resolve();
+        });
+    });
+};
+
+const deleteQACollection = async (name) => {
+    return new Promise(async resolve => {
+        const repo = await connectQA();
+        console.log("Deleting", name);
+        // repo.client.close();
+        // return;
+        return repo.db.collection(name).drop((err, delOK) => {
+            if (err) throw err;
+            if (delOK)
+                console.log("Collection deleted", name);
+            repo.client.close();
+            resolve(name);
+        });
+
+    });
+};
+
 const getAllData = async () => {
-    const collections = await getALlCollections();
+    const collections = await getALlCollections(uriProd);
     return await getCollections(collections);
 };
 
-const getALlCollections = async () => {
+const getALlCollections = async (urlDB) => {
     return new Promise(async resolve => {
-        const repo = await connect();
+        const repo = await connect(urlDB);
         repo.db.listCollections().toArray(function (err, collInfos) {
             if (err) {
                 console.log(err);
@@ -64,6 +144,7 @@ const getALlCollections = async () => {
             collInfos.map(col => {
                 result.push(col.name);
             });
+            repo.client.close();
             resolve(result);
         });
     });
@@ -71,9 +152,10 @@ const getALlCollections = async () => {
 
 
 const revealed = {
-    connect,
+    connect: connectProd,
     getCollections,
-    getAllData
+    getAllData,
+    restoreData
 };
 
 module.exports = revealed;
