@@ -57,51 +57,53 @@ const getCollectionData = (db, name) => {
 };
 
 const restoreData = async (collections) => {
-    await deleteALlQACollections();
+    const repo = await connectQA();
+    await deleteALlCollections(repo);
     for (let pp in collections) {
         let data = collections[pp];
-        await createQACollection(pp);
-        await insertDataQACollection(pp, data);
+        await createCollection(pp, repo);
+        await insertDataQACollection(pp, data, repo);
     }
 };
 
-const deleteALlQACollections = async () => {
+const restoreProdData = async (collections) => {
+    const repo = await connectQA();
+    await deleteALlCollections(repo);
+    for (let pp in collections) {
+        let data = collections[pp];
+        await createCollection(pp, repo);
+        await insertDataQACollection(pp, data, repo);
+    }
+};
+
+const deleteALlCollections = async (repo) => {
     let promises = [];
-    const collections = await getALlCollections(uriQA);
+    const collections = await getALlCollections(repo);
     collections.map(col => {
-        promises.push(deleteQACollection(col));
+        promises.push(deleteCollection(col, repo));
     });
     return Promise.all(promises);
 };
 
-const createQACollections = async (collections) => {
-    let promises = [];
-    collections.map(col => {
-        promises.push(createQACollection(col));
-    });
-    return Promise.all(promises);
-};
-
-
-const createQACollection = async (name) => {
+const createCollection = async (name, repo) => {
     return new Promise(async resolve => {
-        const repo = await connectQA();
         repo.db.createCollection(name, function (err, res) {
             if (err) throw err;
-            console.log("Collection created!");
+            console.log("Collection created!", name);
             resolve(name);
-            repo.client.close();
         });
     });
 };
-const insertDataQACollection = async (name, data) => {
+
+const insertDataQACollection = async (name, data, repo) => {
     let promises = [];
-    const repo = await connectQA();
+    console.log("insert ", name, data.length);
     data.map(item => {
         promises.push(insertOneCollection(repo.db, name, item));
     });
     return Promise.all(promises);
 };
+
 const insertOneCollection = async (db, name, item) => {
     return new Promise(resolve => {
         db.collection(name).insertOne(item, function (err, res) {
@@ -111,17 +113,12 @@ const insertOneCollection = async (db, name, item) => {
     });
 };
 
-const deleteQACollection = async (name) => {
+const deleteCollection = async (name, repo) => {
     return new Promise(async resolve => {
-        const repo = await connectQA();
-        console.log("Deleting", name);
-        // repo.client.close();
-        // return;
         return repo.db.collection(name).drop((err, delOK) => {
             if (err) throw err;
             if (delOK)
                 console.log("Collection deleted", name);
-            repo.client.close();
             resolve(name);
         });
 
@@ -129,13 +126,14 @@ const deleteQACollection = async (name) => {
 };
 
 const getAllData = async () => {
-    const collections = await getALlCollections(uriProd);
+    const repo = await connectProd();
+    const collections = await getALlCollections(repo);
+    repo.client.close();
     return await getCollections(collections);
 };
 
-const getALlCollections = async (urlDB) => {
+const getALlCollections = async (repo) => {
     return new Promise(async resolve => {
-        const repo = await connect(urlDB);
         repo.db.listCollections().toArray(function (err, collInfos) {
             if (err) {
                 console.log(err);
@@ -144,7 +142,6 @@ const getALlCollections = async (urlDB) => {
             collInfos.map(col => {
                 result.push(col.name);
             });
-            repo.client.close();
             resolve(result);
         });
     });
@@ -155,7 +152,8 @@ const revealed = {
     connect: connectProd,
     getCollections,
     getAllData,
-    restoreData
+    restoreData,
+    restoreProdData
 };
 
 module.exports = revealed;
