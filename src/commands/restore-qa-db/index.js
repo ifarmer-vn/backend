@@ -1,9 +1,9 @@
-const {getAllData} = require('../../mongodb/index');
+const {getAllData, restoreData} = require('../../mongodb/index');
 
 const getAllDataFromMongoDB = async () => {
     const data = await getAllData();
-    console.log(data);
-    return data;
+    await restoreData(data);
+    return [];
 };
 
 const main = async () => {
