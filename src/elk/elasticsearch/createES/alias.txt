@@ -1,0 +1,89 @@
+POST /_aliases
+{
+  "actions": [
+    {
+      "remove": {
+        "index": "products-20191130",
+        "alias": "products_v1"
+      }
+    },
+    {
+      "remove": {
+        "index": "variant-types-20191130",
+        "alias": "variant-types_v1"
+      }
+    },
+    {
+      "remove": {
+        "index": "categories-20191130",
+        "alias": "categories_v1"
+      }
+    },
+    {
+      "remove": {
+        "index": "article-categories-20191130",
+        "alias": "article-categories_v1"
+      }
+    },
+    {
+      "remove": {
+        "index": "articles-20191130",
+        "alias": "articles_v1"
+      }
+    },
+    {
+      "remove": {
+        "index": "variants-20191130",
+        "alias": "variants_v1"
+      }
+    },
+    {
+      "remove": {
+        "index": "pages-20191130",
+        "alias": "pages_v1"
+      }
+    },
+    {
+      "add": {
+        "index": "products-20191130",
+        "alias": "products_v1"
+      }
+    },
+    {
+      "add": {
+        "index": "variant-types-20191130",
+        "alias": "variant-types_v1"
+      }
+    },
+    {
+      "add": {
+        "index": "categories-20191130",
+        "alias": "categories_v1"
+      }
+    },
+    {
+      "add": {
+        "index": "article-categories-20191130",
+        "alias": "article-categories_v1"
+      }
+    },
+    {
+      "add": {
+        "index": "articles-20191130",
+        "alias": "articles_v1"
+      }
+    },
+    {
+      "add": {
+        "index": "variants-20191130",
+        "alias": "variants_v1"
+      }
+    },
+    {
+      "add": {
+        "index": "pages-20191130",
+        "alias": "pages_v1"
+      }
+    }
+  ]
+}
