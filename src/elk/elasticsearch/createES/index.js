@@ -24,14 +24,10 @@ const indices = [
     require("../indices/variants"),
     require("../indices/pages"),
 ];
-
 async function main() {
     return new Promise(async resolve => {
         let promises = [];
-        // let data = require("../../../../temp/data");
-        // migrateData(data);
         let data;
-        await deleteIndices(indices);
         getAllDataFromCMS();
         createAllIndices();
         Promise.all(promises).then(() => {

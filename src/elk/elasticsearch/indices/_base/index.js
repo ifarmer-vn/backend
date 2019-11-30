@@ -1,6 +1,10 @@
 const client = require("../../ES");
-const {version} = require("../../../config/elasticsearch");
+if(!process.argv[2])
+    throw Error("Missing index version");
 
+let {version} = require("../../../config/elasticsearch");
+version = `-${process.argv[2]}`;
+console.log(version);
 const v = () => version;
 const mapping = index => schema => {
     return client.indices.create({
