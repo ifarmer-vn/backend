@@ -4,3 +4,7 @@ src/data-examples
 backup
 **/*credential*
 temp
+**/*.zip
+**/*.csv
+**test**.*
+redirect.txt

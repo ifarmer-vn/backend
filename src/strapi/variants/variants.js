@@ -4,6 +4,7 @@ const media = require("../../image/media");
 const contentName = "variants";
 const contentType = require("../_base/content-type");
 const update = contentType.update(contentName);
+const deleteByID = contentType.deleteByID(contentName);
 const getAll = contentType.getAll(contentName);
 const deleteAll = contentType.deleteAll(contentName);
 
@@ -102,6 +103,7 @@ const revealed = {
     getName,
     getAll,
     deleteAll,
+    deleteByID,
     create,
     mapping,
     createAll,

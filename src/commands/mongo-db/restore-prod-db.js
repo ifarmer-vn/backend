@@ -1,8 +1,8 @@
-const {restoreData} = require('../../mongodb');
+const {restoreProdData} = require('../../mongodb');
 
 const main = async () => {
-    const data =  require("../../../backup/prod-db-2019-11-10");
-    await restoreData(data);
+    const data =  require("../../../backup/prod-db-2020-2-19-v1.json");
+    await restoreProdData(data);
 };
 
 console.time('Restore PROD DB');

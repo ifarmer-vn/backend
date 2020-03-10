@@ -1,7 +1,7 @@
 const credential = require("./credential");
-
+const {createTasks, executeTasks} = require("../utils");
 const MongoClient = require('mongodb').MongoClient;
-
+const ObjectID = require('mongodb').ObjectID;
 const uriProd = credential.uri;
 const uriQA = credential.uriQA;
 
@@ -67,7 +67,7 @@ const restoreData = async (collections) => {
 };
 
 const restoreProdData = async (collections) => {
-    const repo = await connectQA();
+    const repo = await connectProd();
     await deleteALlCollections(repo);
     for (let pp in collections) {
         let data = collections[pp];
@@ -96,16 +96,22 @@ const createCollection = async (name, repo) => {
 };
 
 const insertDataQACollection = async (name, data, repo) => {
-    let promises = [];
     console.log("insert ", name, data.length);
-    data.map(item => {
-        promises.push(insertOneCollection(repo.db, name, item));
-    });
-    return Promise.all(promises);
+    let tasks = [];
+    const insertTask = createTasks(tasks);
+    data.map(item => insertTask(async () => {
+        await insertOneCollection(repo.db, name, item)
+    }));
+    return await executeTasks(tasks, {});
 };
 
 const insertOneCollection = async (db, name, item) => {
     return new Promise(resolve => {
+        item._id = ObjectID(item._id);
+        if(item.related && item.related[0] && item.related[0]._id){
+            item.related[0]._id = ObjectID(item.related[0]._id);
+            item.related[0].ref = ObjectID(item.related[0].ref);
+        }
         db.collection(name).insertOne(item, function (err, res) {
             if (err) throw err;
             resolve();

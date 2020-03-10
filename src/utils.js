@@ -1,5 +1,12 @@
 const fs = require('fs');
-
+const es = require('event-stream');
+String.prototype.money = function () {
+    let target = this;
+    return target.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+};
+String.prototype.splice = function(idx, rem, str) {
+    return this.slice(0, idx) + str + this.slice(idx + Math.abs(rem));
+};
 const createDir = (dir) => {
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
@@ -8,6 +15,11 @@ const createDir = (dir) => {
 
 const saveDataToFile = (path, data) => {
     fs.writeFileSync(path, JSON.stringify(data));
+};
+const saveArrayToText = (path, data) => {
+    let result = data.join("\n");
+    fs.writeFileSync(path, result);
+
 };
 const updateRawDataInToFile = (file, data) => {
     return new Promise(resolve => {
@@ -103,8 +115,213 @@ const getDataFromJSON = (jsonPath)=>{
     return require(jsonPath);
 };
 
+const removeItem = (array, item) => {
+    const index = array.indexOf(item);
+    // console.log("test", index);
+    if (index !== -1) {
+        array.splice(index, 1)
+    }
+};
+
+async function removeContent(file) {
+    return new Promise(resolve => {
+        fs.writeFile(file, '', function () {
+            resolve();
+        })
+    });
+}
+
+async function exportJsonFile(file, data) {
+    return new Promise(resolve => {
+        fs.writeFile(file, JSON.stringify(data), 'utf8', function (err) {
+            if (err) {
+                console.log('Some error occurred - file either not saved or corrupted file saved.');
+            } else {
+                // console.log(file, 'It\'s updated!');
+            }
+            resolve();
+        });
+    });
+}
+
+async function updateCSVFile(file, data) {
+    return new Promise(resolve => {
+        let lineArray = [];
+        data.forEach(function (infoArray, index) {
+            let line = infoArray.join("\,");
+            lineArray.push(line);
+        });
+        let csvContent = lineArray.join("\n") + "\n";
+        fs.appendFile(file, csvContent, 'utf8', function (err) {
+            if (err) {
+                console.log('Some error occurred - file either not saved or corrupted file saved.');
+            } else {
+                // console.log(file, 'It\'s updated!');
+            }
+            resolve();
+        });
+    });
+}
+
+async function saveCSVFile(file, data) {
+    return new Promise(resolve => {
+        let lineArray = [];
+        data.forEach(function (infoArray, index) {
+            if( infoArray.join){
+                let line = infoArray.join("\t");
+                lineArray.push(line);
+            }
+        });
+        let csvContent = lineArray.join("\n") + "\n";
+        fs.writeFile(file, csvContent, 'utf8', function (err) {
+            if (err) {
+                console.log('Some error occurred - file either not saved or corrupted file saved.');
+            } else {
+                // console.log(file, 'It\'s updated!');
+            }
+            resolve();
+        });
+    });
+}
+
+function CSVToArray(strData, strDelimiter) {
+    // Check to see if the delimiter is defined. If not,
+    // then default to comma.
+    strDelimiter = (strDelimiter || ",");
+
+    // Create a regular expression to parse the CSV values.
+    var objPattern = new RegExp(
+        (
+            // Delimiters.
+            "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+
+            // Quoted fields.
+            "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+
+            // Standard fields.
+            "([^\"\\" + strDelimiter + "\\r\\n]*))"
+        ),
+        "gi"
+    );
+
+
+    // Create an array to hold our data. Give the array9
+    // a default empty first row.
+    var arrData = [[]];
+
+    // Create an array to hold our individual pattern
+    // matching groups.
+    var arrMatches = null;
+
+
+    // Keep looping over the regular expression matches
+    // until we can no longer find a match.
+    while (arrMatches = objPattern.exec(strData)) {
+
+        // Get the delimiter that was found.
+        var strMatchedDelimiter = arrMatches[1];
+
+        // Check to see if the given delimiter has a length
+        // (is not the start of string) and if it matches
+        // field delimiter. If id does not, then we know
+        // that this delimiter is a row delimiter.
+        if (
+            strMatchedDelimiter.length &&
+            strMatchedDelimiter !== strDelimiter
+        ) {
+
+            // Since we have reached a new row of data,
+            // add an empty row to our data array.
+            arrData.push([]);
+
+        }
+
+        var strMatchedValue;
+
+        // Now that we have our delimiter out of the way,
+        // let's check to see which kind of value we
+        // captured (quoted or unquoted).
+        if (arrMatches[2]) {
+
+            // We found a quoted value. When we capture
+            // this value, unescape any double quotes.
+            strMatchedValue = arrMatches[2].replace(
+                new RegExp("\"\"", "g"),
+                "\""
+            );
+
+        } else {
+
+            // We found a non-quoted value.
+            strMatchedValue = arrMatches[3];
+
+        }
+
+
+        // Now that we have our value string, let's add
+        // it to the data array.
+        arrData[arrData.length - 1].push(strMatchedValue);
+    }
+
+    // Return the parsed data.
+    return (arrData);
+}
+
+function getArrDataFromCSV(path, strDelimiter) {
+    let defered = new Promise(resolve => {
+        fs.readFile(path, 'utf8', function (err, data) {
+            if (err) {
+                console.log(err);
+            }
+            console.log(path, data.length);
+            let arr = CSVToArray(data, strDelimiter);
+            resolve(arr);
+        });
+    });
+    return defered;
+}
+
+const getArrDataFromLargeCSV =(path, callback)=> {
+    let defered = new Promise(resolve => {
+        let arrData = [];
+        let lineN = 0;
+        let tempStr = "";
+        console.log("Start file", path);
+        var s = fs.createReadStream(path)
+            .pipe(es.split())
+            .pipe(es.mapSync(function (line) {
+                    lineN++;
+                    tempStr += "\n" + line;
+                    if (lineN % 250502 === 0) {
+                        // if (lineN  === 2) {
+                        s.pause();
+                        console.log(lineN);
+                        let arr = CSVToArray(tempStr);
+                        tempStr = "";
+                        callback(arr, path, s);
+                        arrData = [];
+                    }
+
+                })
+                    .on('error', function (err) {
+                        console.log('Error while reading file.', err);
+                    })
+                    .on('end', function () {
+                        console.log('Read entire file.', lineN);
+                        resolve(lineN);
+                    })
+            );
+    });
+    return defered;
+};
+
 const revealed = {
     getYYYYMMDD,
+    updateCSVFile,
+    exportJsonFile,
+    getDataFromJSON,
+    removeContent,
+    removeItem,
     createDir,
     saveDataToFile,
     updateRawDataInToFile,
@@ -113,6 +330,10 @@ const revealed = {
     getDataFromCSV,
     regexMatching,
     regexMatchingSync,
+    saveCSVFile,
+    getArrDataFromCSV,
+    getArrDataFromLargeCSV,
+    saveArrayToText,
     executeAsync
 };
 
