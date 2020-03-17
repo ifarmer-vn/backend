@@ -21,7 +21,7 @@ const imgToAmpImg = content => {
     let result = [];
     imgTagRegexMatching(content, matches => {
         const img = matches[0];
-        let replace = img.replace("<img", "<amp-img");
+        let replace = img.replace("<img", "<amp-img lightbox");
         if (!img.includes(`width="`) || !img.includes(`height="`) || !img.includes(`layout="`)) {
             replace = replace
                 .replace(`width="100%"`, ``)
