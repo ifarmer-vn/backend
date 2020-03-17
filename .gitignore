@@ -8,3 +8,6 @@ temp
 **/*.csv
 **test**.*
 redirect.txt
+cms-data.json
+google
+ifarmer

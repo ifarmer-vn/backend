@@ -24,7 +24,8 @@ const createAll = async data => {
 const create = variant => {
     return new Promise(async (resolve, reject) => {
         const mapped = mapping(variant);
-        const images = await downloadImages(variant.images);
+        // const images = await downloadImages(variant.images);
+        const images = variant.images;
         request.post({
             url: `http://localhost:1337/${contentName}`,
         }, async function callback(error, response, body) {
@@ -88,7 +89,7 @@ const mapping = variant => {
         createdAt: variant.dateCreated,
         updatedAt: variant.dateModified,
         title: variant.title,
-        description: variant.shortDescription,
+        description: variant.description,
         disable: variant.hide,
         keywords: [],
         variantTypes: variant.variantTypes
