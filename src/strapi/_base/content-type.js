@@ -1,12 +1,16 @@
 const request = require("request");
-const {createTasks, executeTasks} = require("../../utils");
+const {createTasks, executeTasks,saveDataToFile} = require("../../utils");
 
 const getAll = contentName => () => {
     return new Promise(resolve => {
         request.get({
             url: `http://localhost:1337/${contentName}?_limit=10000`,
         }, async function callback(error, response, body) {
-            console.log("getAll", contentName);
+            if(error){
+                console.log(error);
+            }
+            console.log("getAll", contentName, body.length);
+            saveDataToFile("test.json",body);
             let info = JSON.parse(body);
             resolve(info);
         })
@@ -21,11 +25,11 @@ const deleteAll = contentName => async () => {
     let deleteAllTasks = [];
     const deleteSingleTask = createTasks(deleteAllTasks);
     data.map(item => deleteSingleTask(async () => {
-        await deleteRow(contentName)(item._id);
+        await deleteByID(contentName)(item._id);
     }));
     await executeTasks(deleteAllTasks, {thread: 100});
 };
-const deleteRow = contentName => _id => {
+const deleteByID = contentName => _id => {
     return new Promise(resolve => {
         console.log("Delete", _id);
         request.delete({
@@ -54,7 +58,8 @@ const update = contentName => data => {
 const revealed = {
     getAll,
     deleteAll,
-    update
+    update,
+    deleteByID,
 };
 
 module.exports = revealed;

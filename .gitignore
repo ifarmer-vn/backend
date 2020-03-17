@@ -4,3 +4,10 @@ src/data-examples
 backup
 **/*credential*
 temp
+**/*.zip
+**/*.csv
+**test**.*
+redirect.txt
+cms-data.json
+google
+ifarmer

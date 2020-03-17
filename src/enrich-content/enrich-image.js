@@ -19,7 +19,7 @@ const getDataInCMS = async (cmsCollection) => {
 const checkDataNeedProcessImages = (cmsData) => {
     let result = [];
     for (let pp in cmsData) {
-        if (cmsData[pp].images) {
+        if (cmsData[pp].images && cmsData[pp].images.length) {
             const transformedImages = cmsData[pp].transformedImages;
             const images = cmsData[pp].images;
             if (transformedImages) {

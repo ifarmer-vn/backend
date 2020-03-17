@@ -1,4 +1,4 @@
-const {getAllData, restoreData} = require('../../mongodb');
+const {getAllData, restoreData} = require('../../src/mongodb');
 
 const getAllDataFromMongoDB = async () => {
     return getAllData();

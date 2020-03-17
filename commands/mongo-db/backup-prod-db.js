@@ -1,5 +1,5 @@
-const {getAllData} = require('../../mongodb');
-const utils = require('../../utils');
+const {getAllData} = require('../../src/mongodb');
+const utils = require('../../src/utils');
 
 const getAllDataFromMongoDB = async () => {
     const data = await getAllData();
