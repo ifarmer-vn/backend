@@ -13,8 +13,9 @@ let revealed = (async () => {
 
         const DEFAULT_VARIANT_TYPES = config.variantTypes;
 
-        function createVariant(produc   t, str, defaultVar, price, name) {
-            price = price || (Math.floor(Math.random() * 30) + 60) * 1000;
+        function createVariant(product, str, defaultVar, price, name) {
+            // price = price || (Math.floor(Math.random() * 30) + 60) * 1000;
+            price = 0;
 
             // var input = ["banh-chung","loai|dac-biet||so-luong|1-cai"];
             let urlName = getURLVariant(product, str);

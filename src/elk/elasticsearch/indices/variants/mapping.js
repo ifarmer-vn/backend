@@ -49,6 +49,9 @@ const index = {
 			"original_price": {
 				"type": "float"
 			},
+			"enableOrder": {
+				type: "boolean"
+			},
 		}
 	}
 };

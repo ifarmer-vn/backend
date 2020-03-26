@@ -10,6 +10,11 @@ const uploadImage = require("../firebase/upload-image");
 
 const getDataInCMS = async (cmsCollection) => {
     let data = await cmsCollection.getAll();
+
+    //for debugging
+    // await utils.saveDataToFile("cmsVariantsData.json", data);
+    // let data = require("../../cmsVariantsData.json");
+
     let result = {};
     data.map((item) => {
         result[item["url"]] = item;
@@ -19,21 +24,24 @@ const getDataInCMS = async (cmsCollection) => {
 const checkDataNeedProcessImages = (cmsData) => {
     let result = [];
     for (let pp in cmsData) {
-        if (cmsData[pp].images && cmsData[pp].images.length) {
-            const transformedImages = cmsData[pp].transformedImages;
-            const images = cmsData[pp].images;
+        const images = cmsData[pp].images;
+        const transformedImages = cmsData[pp].transformedImages;
+        if (images && images.length) {
             if (transformedImages) {
                 for (let i = 0; i < images.length; i++) {
                     let transformedImage = transformedImages[i];
                     if (!transformedImage) {
+                        console.log("missing transformedImage", cmsData[pp].name, cmsData[pp]._id);
                         result.push(cmsData[pp]);
                     } else {
                         if (transformedImage.hash !== images[i].hash) {
+                            console.log("different transformedImage", cmsData[pp].name, transformedImage);
                             result.push(cmsData[pp]);
                         }
                     }
                 }
             } else {
+                console.log("different transformedImages", cmsData[pp].name, cmsData[pp]._id);
                 result.push(cmsData[pp]);
             }
         } else {
@@ -46,10 +54,11 @@ const main = async () => {
     const cmsVariantsData = await getDataInCMS(cmsVariants);
     const cmsArticlesData = await getDataInCMS(cmsArticles);
     const cmsCategoriesData = await getDataInCMS(cmsCategories);
+
     let variants = checkDataNeedProcessImages(cmsVariantsData);
+    console.log('Variant images need to be transformed', variants.length);
     let articles = checkDataNeedProcessImages(cmsArticlesData);
     let categories = checkDataNeedProcessImages(cmsCategoriesData);
-    console.log('Data need transform', variants.length);
     await transform(articles, cmsArticles);
     await transform(categories, cmsCategories);
     await transform(variants, cmsVariants);
@@ -68,19 +77,21 @@ const deleteImages = async (images) => {
     await Promise.all(promises);
 };
 const deleteImage = async (imgName) => {
+    // console.log("Delete image", imgName);
     return uploadImage.remove(imgName);
 };
 
 const transformData = async (data, cmsCollection, tempFolder, croppedFolder, processedFolder) => {
     const images = data.images;
     if (data.transformedImages) {
-        console.log("Delete images", data._id);
+        console.log("Delete images", data.name);
     }
     await deleteImages(data.transformedImages);
     let transformedImages = [];
     for (let j = 0; j < images.length; j++) {
         let image = images[j];
         const transformedImage = await processImage(image, tempFolder, croppedFolder, processedFolder);
+        console.log("transformedImage");
         transformedImages.push({
             image: transformedImage,
             hash: image.hash
@@ -93,6 +104,7 @@ const transformData = async (data, cmsCollection, tempFolder, croppedFolder, pro
 };
 const processImage = async (image, tempFolder, croppedFolder, processedFolder) => {
     const imageURL = image.url;
+    console.log("processImage" ,imageURL);
     const fileName = getFileName(imageURL);
     const dataTempFolder = `${tempFolder}/${image.hash}`;
     const dataCroppedFolder = `${croppedFolder}/${image.hash}`;
@@ -121,7 +133,7 @@ const transform = async (arr, cmsCollection) => {
     arr.map(item => addUpdateTask(async () => {
         await transformData(item, cmsCollection, tempFolder, croppedFolder, processedFolder)
     }));
-    await executeTasks(updateTasks, {});
+    await executeTasks(updateTasks, {thread:1});
 };
 
 const uploadImages = async (images, hash) => {
@@ -131,6 +143,7 @@ const uploadImages = async (images, hash) => {
         const fileName = getFileName(image);
         const destination = `a/${hash}/${fileName}`;
         const uploadedImg = await uploadImage.upload(image, destination);
+        console.log("uploadImages");
         const sizeName = getTypeSize(uploadedImg.url);
         result[sizeName] = uploadedImg;
     }
@@ -174,6 +187,7 @@ const getFileName = url => {
     return urlSet[urlSet.length - 1];
 };
 const transformImage = (targetFolder, desFolder) => {
+    // console.log("targetFolder", targetFolder);
     return imagemin([`${targetFolder}/*.*`], {
         destination: desFolder,
         plugins: [

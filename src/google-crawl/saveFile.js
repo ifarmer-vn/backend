@@ -82,7 +82,7 @@ async function updateFile(file, data) {
 
 
 const revealed = {
-	save: save,
+	save,
 	saveCSVFile: saveCSVFile,
 	updateCSVFile: updateCSVFile,
 	updateLargeCSVFolder: updateLargeCSVFolder,

@@ -7,7 +7,7 @@ const phone = "Liên hệ: " + config.phone;
 function generateShortDescription(product, index, price) {
     price = price || (Math.floor(Math.random() * 30) + 60) * 1000;
     let template = [
-        `Giá ${product} ${price.toString().money()} đồng/kg, ${phone} ngay để để đặt mua hàng. ${product} dùng hỗ trợ dễ ngủ, an thần trấn kinh. Bán hàng toàn quốc. Có giao hàng tận nơi.`,
+        `Giá ${product} ${price.toString().money()} đồng/kg, ${phone} ngay để để đặt mua hàng. ${product} dùng hỗ trợ bồi dưỡng cơ thể. Bán hàng toàn quốc. Có giao hàng tận nơi.`,
         `Nếu bạn cần mua ${product} số lượng lớn để điều chế thuốc hay để bán hãy liên hệ với ifarmer.vn để được mua ${product} giá sỉ.
 Nếu Bạn có ${product} xin hãy liên hệ với ifarmer.vn để lưu lại thông tin cho người cần.`,
     ];
