@@ -85,6 +85,7 @@ const mapping = variant => {
         default: variant.defaultProduct,
         extraTitle: variant.extraTittle,
         price: variant.price,
+        original_price: variant.original_price,
         product: variant.product,
         createdAt: variant.dateCreated,
         updatedAt: variant.dateModified,
