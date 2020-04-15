@@ -73,7 +73,7 @@ const mappingDataBetweenCMSWithGSC = (CMSData, GSCData) => {
 const mappingData = pages => (modelName, path, modelRows) => {
     let result = [];
     modelRows.map(row => {
-        const url = `http://ifarmer.vn/${path}${row.url}/`;
+        const url = `${config.siteUrl}/${path}${row.url}/`;
         // console.log(url);
         const page = pages[url];
         if (page) {

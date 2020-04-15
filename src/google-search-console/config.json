@@ -1,19 +1,19 @@
 {
-  "storeFile": "temp/gsc-2020-02-19.csv",
+  "storeFile": "temp/gsc-2020-04-13.csv",
   "CMSData": "../../temp/data.json",
   "rowLimit": 5000,
-  "startDate": "2019-01-01",
-  "endDate": "2020-02-19",
+  "startDate": "2020-01-01",
+  "endDate": "2020-04-13",
   "dimensions": [
     "page",
     "query"
   ],
-  "siteUrl": "http://ifarmer.vn",
+  "siteUrl": "https://ifarmer.vn",
   "query": {
-    "siteUrl": "http://ifarmer.vn",
+    "siteUrl": "https://ifarmer.vn",
     "requestBody": {
-      "startDate": "2019-01-01",
-      "endDate": "2020-02-19",
+      "startDate": "2020-01-01",
+      "endDate": "2020-04-13",
       "rowLimit": 1,
       "dimensions": [
         "page",
