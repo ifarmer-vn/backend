@@ -4,8 +4,23 @@ String.prototype.money = function () {
     let target = this;
     return target.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
-String.prototype.splice = function(idx, rem, str) {
+String.prototype.splice = function (idx, rem, str) {
     return this.slice(0, idx) + str + this.slice(idx + Math.abs(rem));
+};
+
+Date.prototype.addDays = function (days) {
+    let date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+};
+Date.prototype.yyyymmdd = function () {
+    let mm = this.getMonth() + 1; // getMonth() is zero-based
+    let dd = this.getDate();
+
+    return [this.getFullYear(),
+        (mm > 9 ? '' : '0') + mm,
+        (dd > 9 ? '' : '0') + dd
+    ].join('-');
 };
 const createDir = (dir) => {
     if (!fs.existsSync(dir)) {
@@ -21,14 +36,9 @@ const saveArrayToText = (path, data) => {
     fs.writeFileSync(path, result);
 
 };
-const updateRawDataInToFile = (file, data) => {
+const appendCSVFile = (file, data, transformFn) => {
     return new Promise(resolve => {
-        let lineArray = [];
-        data.forEach(function (infoArray) {
-            lineArray.push(JSON.stringify(infoArray));
-        });
-        let csvContent = lineArray.join("\n");
-        csvContent += "\n";
+        let csvContent = transformFn(data);
         fs.appendFile(file, csvContent, 'utf8', function (err) {
             if (err) {
                 console.log('Some error occurred - file either not saved or corrupted file saved.');
@@ -37,6 +47,17 @@ const updateRawDataInToFile = (file, data) => {
             }
             resolve();
         });
+    });
+};
+const updateRawDataInToFile = async (file, data) => {
+    await appendCSVFile(file, data, (rows) => {
+        let lineArray = [];
+        rows.forEach(function (infoArray) {
+            lineArray.push(JSON.stringify(infoArray));
+        });
+        let csvContent = lineArray.join("\n");
+        csvContent += "\n";
+        return csvContent;
     });
 };
 
@@ -102,8 +123,8 @@ const executeTasks = async (tasks, opt) => {
     }
 };
 
-const getYYYYMMDD = ()=>{
-    const dateObj = new Date();
+const getYYYYMMDD = (dateObj) => {
+    dateObj = dateObj || new Date();
     const month = dateObj.getUTCMonth() + 1; //months from 1-12
     const day = dateObj.getUTCDate();
     const year = dateObj.getUTCFullYear();
@@ -111,7 +132,7 @@ const getYYYYMMDD = ()=>{
     return `${year}-${month}-${day}`;
 };
 
-const getDataFromJSON = (jsonPath)=>{
+const getDataFromJSON = (jsonPath) => {
     return require(jsonPath);
 };
 
@@ -167,7 +188,7 @@ async function saveCSVFile(file, data) {
     return new Promise(resolve => {
         let lineArray = [];
         data.forEach(function (infoArray, index) {
-            if( infoArray.join){
+            if (infoArray.join) {
                 let line = infoArray.join("\t");
                 lineArray.push(line);
             }
@@ -281,7 +302,7 @@ function getArrDataFromCSV(path, strDelimiter) {
     return defered;
 }
 
-const getArrDataFromLargeCSV =(path, callback)=> {
+const getArrDataFromLargeCSV = (path, callback) => {
     let defered = new Promise(resolve => {
         let arrData = [];
         let lineN = 0;
@@ -315,7 +336,17 @@ const getArrDataFromLargeCSV =(path, callback)=> {
     return defered;
 };
 
+const objToArray = (obj) => {
+    // if(obj.length >1){}
+    let result = [];
+    for (pp in obj) {
+        result.push(obj[pp]);
+    }
+    return result;
+};
+
 const revealed = {
+    objToArray,
     getYYYYMMDD,
     updateCSVFile,
     exportJsonFile,
@@ -324,6 +355,7 @@ const revealed = {
     removeItem,
     createDir,
     saveDataToFile,
+    appendCSVFile,
     updateRawDataInToFile,
     createTasks,
     executeTasks,

@@ -14,6 +14,7 @@ const contentTypes = [
     require("../../../strapi/variant-types/variant-types"),
     require("../../../strapi/variants/variants"),
     require("../../../strapi/pages/pages"),
+    require("../../../strapi/offers/offers"),
 ];
 const indices = [
     require("../indices/article-categories"),
@@ -23,6 +24,7 @@ const indices = [
     require("../indices/variant-types"),
     require("../indices/variants"),
     require("../indices/pages"),
+    require("../indices/offers"),
 ];
 async function main() {
     return new Promise(async resolve => {
