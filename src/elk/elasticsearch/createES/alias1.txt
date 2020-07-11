@@ -1,2 +1,2 @@
-DELETE products-202005*,variant-types-202005*,categories-202005*,article-categories-202005*,articles-202005*,variants-202005*,pages-202005*
+DELETE products-202006*,variant-types-202006*,categories-202006*,article-categories-202006*,articles-202006*,variants-202006*,pages-202006*
 DELETE products-*,variant-types-*,categories-*,article-categories-*,articles-*,variants-*,pages-*

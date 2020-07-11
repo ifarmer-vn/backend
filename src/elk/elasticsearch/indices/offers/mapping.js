@@ -34,7 +34,7 @@ const index = {
 				"type": "keyword"
 			},
 			"chungnhan": {
-				"type": "keyword"
+				"type": "text"
 			},
 			"loaiban": {
 				"type": "keyword"

@@ -3,85 +3,85 @@ POST /_aliases
   "actions": [
     {
       "remove": {
-        "index": "products-20200526",
+        "index": "products-20200625",
         "alias": "products_v1"
       }
     },
     {
       "remove": {
-        "index": "variant-types-20200526",
+        "index": "variant-types-20200625",
         "alias": "variant-types_v1"
       }
     },
     {
       "remove": {
-        "index": "categories-20200526",
+        "index": "categories-20200625",
         "alias": "categories_v1"
       }
     },
     {
       "remove": {
-        "index": "article-categories-20200526",
+        "index": "article-categories-20200625",
         "alias": "article-categories_v1"
       }
     },
     {
       "remove": {
-        "index": "articles-20200526",
+        "index": "articles-20200625",
         "alias": "articles_v1"
       }
     },
     {
       "remove": {
-        "index": "variants-20200526",
+        "index": "variants-20200625",
         "alias": "variants_v1"
       }
     },
     {
       "remove": {
-        "index": "pages-20200526",
+        "index": "pages-20200625",
         "alias": "pages_v1"
       }
     },
     {
       "add": {
-        "index": "products-20200605",
+        "index": "products-20200706",
         "alias": "products_v1"
       }
     },
     {
       "add": {
-        "index": "variant-types-20200605",
+        "index": "variant-types-20200706",
         "alias": "variant-types_v1"
       }
     },
     {
       "add": {
-        "index": "categories-20200605",
+        "index": "categories-20200706",
         "alias": "categories_v1"
       }
     },
     {
       "add": {
-        "index": "article-categories-20200605",
+        "index": "article-categories-20200706",
         "alias": "article-categories_v1"
       }
     },
     {
       "add": {
-        "index": "articles-20200605",
+        "index": "articles-20200706",
         "alias": "articles_v1"
       }
     },
     {
       "add": {
-        "index": "variants-20200605",
+        "index": "variants-20200706",
         "alias": "variants_v1"
       }
     },
     {
       "add": {
-        "index": "pages-20200605",
+        "index": "pages-20200706",
         "alias": "pages_v1"
       }
     }
