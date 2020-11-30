@@ -30,7 +30,7 @@ async function main() {
     return new Promise(async resolve => {
         let promises = [];
         let data;
-        // await deleteIndices(indices);
+        await deleteIndices(indices);
         getAllDataFromCMS();
         createAllIndices();
         Promise.all(promises).then(() => {

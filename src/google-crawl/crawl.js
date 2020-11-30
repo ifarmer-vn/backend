@@ -103,7 +103,7 @@ function start() {
 }
 
 const revealed = {
-    start: start
+    start
 };
 
 module.exports = revealed;

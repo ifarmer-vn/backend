@@ -33,6 +33,18 @@ const create = article => {
         }).form(mapped);
     });
 };
+const createArticle = article =>{
+    return new Promise(async (resolve, reject) => {
+        request.post({
+            url: `http://localhost:1337/${contentName}`,
+        }, async function callback(error, response, body) {
+            var info = JSON.parse(body);
+            const output = await updateArticleImage(info._id, article.image);
+            console.log(info.url)
+            resolve(output, info);
+        }).form(article);
+    });
+};
 
 const mapping = article => {
     return {
@@ -63,6 +75,7 @@ const revealed = {
     create,
     mapping,
     createAll,
+    createArticle,
     update
 };
 module.exports = revealed;

@@ -1,5 +1,5 @@
 ﻿{
-  "variantTypes": "loai|le|si",
+  "variantTypes": "loai|le|si|xuat-khau",
   "variantTypesRauThomRauNem": "hang|nha|xuat-khau||trong-luong|1-kg|500-g|100-g",
   "variantTypesRau": "hang|nha|xuat-khau||trong-luong|2-kg|500-g|1-kg",
   "variantTypesCaBien": "hang|xuat-khau|dong-lanh|tuoi||trong-luong|2-kg|1-kg",
@@ -10,7 +10,7 @@
   "variantTypes-hat-tet": "loai|hat-tet||trong-luong|200-g|300-g|500-g|2-kg|3-kg|4-kg|1-kg",
   "variantTypes-mut-tet": "loai|mut-tet||trong-luong|200-g|300-g|500-g|2-kg|1-kg",
   "variantTypes-cay-canh": "kieng|tet||loai|chau-nho|chau-lon|chau-vua",
-  "category": "vi-thuoc-bo",
+  "category": "thuoc-da",
   "article-category": "cay-thuoc",
   "phone": "091 832 7819",
   "country": "MY",

@@ -12,7 +12,14 @@ const crop = async (filePath, desFolder, x, y) => {
 
     });
 };
+const reduceSize = async (filePath, desFolder) => {
+    return new Promise(resolve => {
+        return sharp(filePath).toFile(desFolder, (err, info) => {
+            resolve({desFolder,info});
+        });
 
+    });
+};
 
 const upload = (modelName, fieldName) => (refId, filePath, path) => {
     return new Promise((resolve, reject) => {
@@ -70,6 +77,7 @@ const downloadImageFromFireBase = async url => {
 const revealed = {
     crop,
     upload,
+    reduceSize,
     download,
     downloadImageFromFireBase
 };

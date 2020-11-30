@@ -1,9 +1,9 @@
 {
-  "storeFile": "temp/gsc-2020-04-22-3.csv",
+  "storeFile": "temp/gsc-2020-11-10xxxxxxxx.csv",
   "CMSData": "../../temp/data.json",
   "rowLimit": 5000,
   "startDate": "2020-01-01",
-  "endDate": "2020-04-22",
+  "endDate": "2020-11-10",
   "dimensions": [
     "page",
     "query"

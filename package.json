@@ -19,6 +19,7 @@
   "dependencies": {
     "elasticsearch": "^16.3.0",
     "event-stream": "^4.0.1",
+    "extract-zip": "^2.0.1",
     "firebase": "^7.15.5",
     "firebase-admin": "^8.7.0",
     "globule": "^1.3.1",
@@ -26,13 +27,18 @@
     "imagemin": "^7.0.0",
     "imagemin-webp": "^5.1.0",
     "jasmine": "^3.4.0",
+    "jsdom": "^16.3.0",
     "lodash": "^4.17.15",
+    "make-dir": "^3.1.0",
     "mongodb": "^3.3.0-beta2",
     "open": "^6.4.0",
     "puppeteer": "^2.1.1",
     "ramda": "^0.26.1",
     "request": "^2.88.0",
     "server-destroy": "^1.0.1",
-    "sharp": "^0.23.2"
+    "sharp": "^0.23.2",
+    "unzip": "^0.1.11",
+    "xmldom": "^0.3.0",
+    "xpath.js": "^1.1.0"
   }
 }
