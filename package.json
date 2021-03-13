@@ -38,7 +38,7 @@
     "server-destroy": "^1.0.1",
     "sharp": "^0.23.2",
     "unzip": "^0.1.11",
-    "xmldom": "^0.3.0",
+    "xmldom": "^0.5.0",
     "xpath.js": "^1.1.0"
   }
 }
